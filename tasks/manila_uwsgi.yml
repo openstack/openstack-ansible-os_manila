@@ -1,3 +1,4 @@
+---
 # Copyright 2017, Rackspace US, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,16 +13,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- project:
-    templates:
-      - check-requirements
-      - publish-openstack-docs-pti
-      - release-notes-jobs-python3
-    check:
-      jobs:
-        - openstack-ansible-functional-ubuntu-bionic
-        - openstack-ansible-functional-distro_install-ubuntu-bionic:
-            voting: false
-    gate:
-      jobs:
-        - openstack-ansible-functional-ubuntu-bionic
+- name: Ensure uWSGI directory exists
+  file:
+    path: "/etc/uwsgi/"
+    state: directory
+    mode: "0711"
+
+- name: Apply uWSGI configuration
+  config_template:
+    src: "manila-uwsgi.ini.j2"
+    dest: "/etc/uwsgi/{{ item.service_name }}.ini"
+    mode: "0744"
+    config_overrides: "{{ item.wsgi_overrides }}"
+    config_type: ini
+  with_items: "{{ filtered_manila_services }}"
+  when: item.wsgi_app | default(False)
+  notify:
+    - Manage LB
+    - Restart manila services

@@ -1,4 +1,5 @@
-# Copyright 2017, Rackspace US, Inc.
+---
+# Copyright 2016, Rackspace US, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,16 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- project:
-    templates:
-      - check-requirements
-      - publish-openstack-docs-pti
-      - release-notes-jobs-python3
-    check:
-      jobs:
-        - openstack-ansible-functional-ubuntu-bionic
-        - openstack-ansible-functional-distro_install-ubuntu-bionic:
-            voting: false
-    gate:
-      jobs:
-        - openstack-ansible-functional-ubuntu-bionic
+neutron_provider_networks:
+  network_types: "vxlan,flat"
+  network_mappings: "flat:eth12"
+  network_vxlan_ranges: "1:1000"
+ansible_host: 10.1.1.102
+ansible_become: True
+ansible_user: root
+container_name: openstack1
+tunnel_address: 10.1.2.102
+neutron_local_ip: 10.1.2.102

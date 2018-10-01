@@ -1,0 +1,129 @@
+# {{ ansible_managed }}
+
+[DEFAULT]
+use_journal = True
+# Disable stderr logging
+use_stderr = False
+debug = {{ debug }}
+fatal_deprecations = {{ manila_fatal_deprecations }}
+my_ip = {{ manila_management_address }}
+
+default_share_type = {{ manila_default_share_type }}
+share_name_template = {{ manila_share_name_template }}
+
+osapi_share_workers = {{ manila_osapi_share_workers }}
+
+rootwrap_config = /etc/manila/rootwrap.conf
+api_paste_config = /etc/manila/api-paste.ini
+auth_strategy = {{ manila_auth_strategy }}
+
+## RabbitMQ RPC
+executor_thread_pool_size = {{ manila_rpc_executor_thread_pool_size }}
+rpc_response_timeout = {{ manila_rpc_response_timeout }}
+
+transport_url = {{ manila_oslomsg_rpc_transport }}://{% for host in manila_oslomsg_rpc_servers.split(',') %}{{ manila_oslomsg_rpc_userid }}:{{ manila_oslomsg_rpc_password }}@{{ host }}:{{ manila_oslomsg_rpc_port }}{% if not loop.last %},{% else %}/{{ manila_oslomsg_rpc_vhost }}{% if manila_oslomsg_rpc_use_ssl | bool %}?ssl=1{% else %}?ssl=0{% endif %}{% endif %}{% endfor %}
+
+## Quota
+quota_shares = {{ manila_quota_shares }}
+quota_snapshots = {{ manila_quota_snapshots }}
+quota_gigabytes = {{ manila_quota_gigabytes }}
+quota_snapshot_gigabytes = {{ manila_quota_snapshot_gigabytes }}
+quota_share_networks = {{ manila_quota_share_networks }}
+
+os_region_name = {{ manila_service_region }}
+
+storage_availability_zone = {{ manila_storage_availability_zone }}
+
+client_socket_timeout = {{ manila_client_socket_timeout }}
+
+{% if manila_enabled_share_protocols is defined %}
+enabled_share_protocols={{ manila_enabled_share_protocols }}
+{% endif %}
+
+{% if manila_backends is defined %}
+enabled_share_backends={% for backend in manila_backends|dictsort %}{{ backend.0 }}{% if not loop.last %},{% endif %}{% endfor %}
+
+# All given backend(s)
+{% for backend_section in manila_backends|dictsort %}
+[{{ backend_section.0 }}]
+{% for key, value in (backend_section.1 | dictsort) if key not in ['extra_share_types', 'shares'] %}
+{{ key }}={{ value }}
+{% endfor %}
+
+{% endfor %}
+{% endif %}
+
+[database]
+connection = mysql+pymysql://{{ manila_galera_user }}:{{ manila_container_mysql_password }}@{{ manila_galera_address }}/{{ manila_galera_database }}?charset=utf8{% if manila_galera_use_ssl | bool %}&ssl_ca={{ manila_galera_ssl_ca_cert }}{% endif %}
+
+[oslo_messaging_rabbit]
+ssl = {{ manila_oslomsg_rpc_use_ssl }}
+
+[oslo_messaging_notifications]
+driver = {% if manila_ceilometer_enabled %}messagingv2{% else %}noop{% endif %}
+transport_url = {{ manila_oslomsg_notify_transport }}://{% for host in manila_oslomsg_notify_servers.split(',') %}{{ manila_oslomsg_notify_userid }}:{{ manila_oslomsg_notify_password }}@{{ host }}:{{ manila_oslomsg_notify_port }}{% if not loop.last %},{% else %}/{{ manila_oslomsg_notify_vhost }}{% if manila_oslomsg_notify_use_ssl | bool %}?ssl=1{% else %}?ssl=0{% endif %}{% endif %}{% endfor %}
+
+[oslo_concurrency]
+lock_path = {{ manila_lock_path }}
+
+[profiler]
+enabled = {{ manila_profiler_enabled }}
+trace_sqlalchemy = {{ manila_profiler_trace_sqlalchemy }}
+hmac_keys = {{ manila_profiler_hmac_key }}
+
+[keystone_authtoken]
+insecure = {{ keystone_service_internaluri_insecure | bool }}
+auth_type = {{ manila_keystone_auth_plugin }}
+auth_url = {{ keystone_service_adminurl }}
+www_authenticate_uri = {{ keystone_service_internaluri }}
+project_domain_id = {{ manila_service_project_domain_id }}
+user_domain_id = {{ manila_service_user_domain_id }}
+project_name = {{ manila_service_project_name }}
+username = {{ manila_service_user_name }}
+password = {{ manila_service_password }}
+region_name = {{ keystone_service_region }}
+
+memcached_servers = {{ memcached_servers }}
+
+token_cache_time = 300
+
+# if your memcached server is shared, use these settings to avoid cache poisoning
+memcache_security_strategy = ENCRYPT
+memcache_secret_key = {{ memcached_encryption_key }}
+
+[neutron]
+url = http://{{ internal_lb_vip_address }}:9696
+www_authenticate_uri = {{ keystone_service_internaluri }}
+auth_url = {{ keystone_service_adminurl }}
+memcached_servers = {{ memcached_servers }}
+auth_type = {{ manila_keystone_auth_plugin }}
+project_domain_name = {{ neutron_service_domain_name | default("Default") }}
+user_domain_name = {{ neutron_service_domain_name | default("Default") }}
+region_name = {{ neutron_service_region }}
+project_name = {{ neutron_service_project_name }}
+username = {{ neutron_service_user_name }}
+password = {{ neutron_service_password }}
+
+[nova]
+www_authenticate_uri = {{ keystone_service_internaluri }}
+auth_url = {{ keystone_service_adminurl }}
+memcached_servers = {{ memcached_servers }}
+auth_type = {{ manila_keystone_auth_plugin }}
+project_domain_name = {{ nova_service_domain_name | default("Default") }}
+user_domain_name = {{ nova_service_domain_name | default("Default") }}
+region_name = {{ nova_service_region }}
+project_name = {{ nova_service_project_name }}
+username = {{ nova_service_user_name }}
+password = {{ nova_service_password }}
+
+[cinder]
+www_authenticate_uri = {{ keystone_service_internaluri }}
+auth_url = {{ keystone_service_adminurl }}
+memcached_servers = {{ memcached_servers }}
+auth_type = {{ manila_keystone_auth_plugin }}
+project_domain_name = {{ cinder_service_domain_name | default("Default") }}
+user_domain_name = {{ cinder_service_domain_name | default("Default") }}
+region_name = {{ cinder_service_region | default("RegionOne") }}
+project_name = {{ cinder_service_project_name | default("service") }}
+username = {{ cinder_service_user_name | default("cinder") }}
+password = {{ cinder_service_password | default("secrete") }}

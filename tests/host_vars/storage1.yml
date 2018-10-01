@@ -1,4 +1,5 @@
-# Copyright 2017, Rackspace US, Inc.
+---
+# Copyright 2016, Rackspace US, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,16 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- project:
-    templates:
-      - check-requirements
-      - publish-openstack-docs-pti
-      - release-notes-jobs-python3
-    check:
-      jobs:
-        - openstack-ansible-functional-ubuntu-bionic
-        - openstack-ansible-functional-distro_install-ubuntu-bionic:
-            voting: false
-    gate:
-      jobs:
-        - openstack-ansible-functional-ubuntu-bionic
+ansible_host: "10.1.1.1"
+neutron_local_ip:  10.1.2.1
+neutron_provider_networks:
+  network_types: "vxlan,flat"
+  network_mappings: "flat:eth12"
+  network_vxlan_ranges: "1:1000"
+
+cinder_backends:
+  lvm:
+    volume_backend_name: LVM_iSCSI
+    volume_driver: cinder.volume.drivers.lvm.LVMVolumeDriver
+    volume_group: cinder-volumes
+    iscsi_ip_address: "{{ cinder_storage_address }}"

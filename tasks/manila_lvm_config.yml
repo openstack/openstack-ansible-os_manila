@@ -1,4 +1,5 @@
-# Copyright 2017, Rackspace US, Inc.
+---
+# Copyright 2014, Rackspace US, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,16 +13,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- project:
-    templates:
-      - check-requirements
-      - publish-openstack-docs-pti
-      - release-notes-jobs-python3
-    check:
-      jobs:
-        - openstack-ansible-functional-ubuntu-bionic
-        - openstack-ansible-functional-distro_install-ubuntu-bionic:
-            voting: false
-    gate:
-      jobs:
-        - openstack-ansible-functional-ubuntu-bionic
+- name: Discover lvm devices
+  shell: |
+    /sbin/pvdisplay | awk '/PV\ Name/ {print $3}' | sed 's/\/dev\///g'
+  register: lvm_devices
+  changed_when: lvm_devices.rc != 0
+  failed_when: false
+
+- name: Ensure "/etc/lvm" directory
+  file:
+    state: "directory"
+    path: "/etc/lvm"
+  when: lvm_devices.rc == 0
+
+- name: Drop lvm Config
+  template:
+    src: "lvm.conf.j2"
+    dest: "/etc/lvm/lvm.conf"
+    owner: "root"
+    group: "root"
+    backup: "yes"
+  when: lvm_devices.rc == 0

@@ -1,0 +1,25 @@
+[uwsgi]
+uid = {{ manila_system_user_name }}
+gid = {{ manila_system_group_name }}
+
+{% if manila_install_method == 'source' %}
+virtualenv = /openstack/venvs/manila-{{ manila_venv_tag }}
+{% endif %}
+wsgi-file = {{ manila_bin }}/{{ item.wsgi_name }}
+http = {{ item.uwsgi_bind_address }}:{{ item.uwsgi_port }}
+
+master = true
+enable-threads = true
+processes = {{ manila_wsgi_processes }}
+threads = {{ manila_wsgi_threads }}
+exit-on-reload = false
+die-on-term = true
+lazy-apps = true
+add-header = Connection: close
+buffer-size = {{ manila_wsgi_buffer_size }}
+thunder-lock = true
+logfile-chmod = 644
+pidfile = /var/run/{{ item.service_name }}/{{ item.service_name }}.pid
+
+# Avoid filling up the logs with health check requests from haproxy.
+route-user-agent = ^osa-haproxy-healthcheck$ donotlog:
