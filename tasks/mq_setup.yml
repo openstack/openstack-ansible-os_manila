@@ -1,5 +1,5 @@
 ---
-# Copyright 2018, Rackspace US, Inc.
+# Copyright 2019, Rackspace US, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,8 +23,8 @@
 - name: Setup RPC MQ Service (RabbitMQ)
   delegate_to: "{{ _oslomsg_rpc_setup_host }}"
   when:
-    - "(_oslomsg_configure_rpc | default(_oslomsg_rpc_transport is defined))"
-    - "(_oslomsg_rpc_transport is defined) and (_oslomsg_rpc_transport == 'rabbit')"
+    - (_oslomsg_configure_rpc | default(_oslomsg_rpc_transport is defined))
+    - (_oslomsg_rpc_transport is defined) and (_oslomsg_rpc_transport == 'rabbit')
   tags:
     - common-rabbitmq
   block:
@@ -73,8 +73,8 @@
 - name: Setup RPC MQ Service (Qdrouterd)
   delegate_to: "{{ _oslomsg_rpc_setup_host }}"
   when:
-    - "(_oslomsg_configure_rpc | default(_oslomsg_rpc_transport is defined))"
-    - "(_oslomsg_rpc_transport is defined) and (_oslomsg_rpc_transport == 'amqp')"
+    - (_oslomsg_configure_rpc | default(_oslomsg_rpc_transport is defined))
+    - (_oslomsg_rpc_transport is defined) and (_oslomsg_rpc_transport == 'amqp')
   tags:
     - common-qdrouterd
   block:

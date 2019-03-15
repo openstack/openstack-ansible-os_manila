@@ -1,5 +1,5 @@
 ---
-# Copyright 2015, Rackspace US, Inc.
+# Copyright 2019, Rackspace US, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,10 +16,10 @@
 # Setup the host
 - import_playbook: common/test-setup-host.yml
 
-# Prepare the manila-share VG
+# Prepare the manila_share VG
 - import_playbook: test-setup-manila-localhost.yml
 
-# Prepare the manila-share VG
+# Prepare the manila_share VG
 - import_playbook: common/test-setup-cinder-localhost.yml
 
 # Install RabbitMQ/MariaDB

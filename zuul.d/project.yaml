@@ -1,4 +1,4 @@
-# Copyright 2017, Rackspace US, Inc.
+# Copyright 2019, Rackspace US, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,11 +17,3 @@
       - check-requirements
       - publish-openstack-docs-pti
       - release-notes-jobs-python3
-    check:
-      jobs:
-        - openstack-ansible-functional-ubuntu-bionic
-        - openstack-ansible-functional-distro_install-ubuntu-bionic:
-            voting: false
-    gate:
-      jobs:
-        - openstack-ansible-functional-ubuntu-bionic

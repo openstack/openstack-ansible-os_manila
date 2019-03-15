@@ -1,5 +1,5 @@
 ---
-# Copyright 2014, Rackspace US, Inc.
+# Copyright 2019, Rackspace US, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -30,28 +30,49 @@
     msg: "Switching installation methods for OpenStack services is not supported"
   when:
     - ansible_local is defined
-    - ansible_local.openstack_ansible is defined
-    - ansible_local.openstack_ansible.manila is defined
-    - ansible_local.openstack_ansible.manila.install_method is defined
-    - ansible_local.openstack_ansible.manila.install_method != manila_install_method
+    - ansible_local['openstack_ansible'] is defined
+    - ansible_local['openstack_ansible']['manila'] is defined
+    - ansible_local['openstack_ansible']['manila']['install_method'] is defined
+    - ansible_local['openstack_ansible']['manila']['install_method'] != manila_install_method
+
+- name: Check for rpc password
+  fail:
+    msg: >-
+      The optiton "manila_oslomsg_rpc_password" is not defined
+  when:
+    - manila_oslomsg_rpc_password is undefined
+
+- name: Check for mysql password
+  fail:
+    msg: >-
+      The optiton "manila_container_mysql_password" is not defined
+  when:
+    - manila_container_mysql_password is undefined
+
+- name: Check for service password
+  fail:
+    msg: >-
+      The optiton "manila_service_password" is not defined
+  when:
+    - manila_service_password is undefined
 
 - name: Gather variables for installation method
   include_vars: "{{ manila_install_method }}_install.yml"
   tags:
     - always
 
-- include: manila_lvm_config.yml
+- import_tasks: manila_lvm_config.yml
   when:
-    - "manila_services['manila-share']['group'] in group_names"
-    - "manila_backend_lvm_inuse | bool"
+    - manila_services['manila_share']['group'] in group_names
+    - manila_backend_lvm_inuse | bool
   tags:
     - manila-config
 
-- include: manila_pre_install.yml
+- import_tasks: manila_pre_install.yml
   tags:
     - manila-install
 
-- include: manila_install.yml
+- import_tasks: manila_install.yml
   tags:
     - manila-install
 
@@ -62,20 +83,18 @@
   tags:
     - manila-config
 
-- include: manila_cleanup_old_facts.yml
-  when:
-    - "'need_db_sync' in ansible_local['openstack_ansible']['manila']"
+- import_tasks: manila_cleanup_old_facts.yml
   tags:
     - manila-config
 
-- include: manila_post_install.yml
+- import_tasks: manila_post_install.yml
   tags:
     - manila-config
 
-- import_tasks: mq_setup.yml
+- include_tasks: mq_setup.yml
   when:
-    - "manila_services['manila-api']['group'] in group_names"
-    - "inventory_hostname == ((groups[manila_services['manila-api']['group']]| intersect(ansible_play_hosts)) | list)[0]"
+    - "manila_services['manila_api']['group'] in group_names"
+    - "inventory_hostname == ((groups[manila_services['manila_api']['group']]| intersect(ansible_play_hosts)) | list)[0]"
   vars:
     _oslomsg_rpc_setup_host: "{{ manila_oslomsg_rpc_setup_host }}"
     _oslomsg_rpc_userid: "{{ manila_oslomsg_rpc_userid }}"
@@ -91,48 +110,53 @@
     - common-mq
     - manila-config
 
-- include: manila_db_setup.yml
-  static: no
+- include_tasks: manila_db_setup.yml
   when:
-    - "groups['manila_api'] | length > 0"
-    - "manila_services['manila-api']['group'] in group_names"
-    - "inventory_hostname == ((groups['manila_api'] | intersect(ansible_play_hosts)) | list)[0]"
+    - groups['manila_api'] | length > 0
+    - manila_services['manila_api']['group'] in group_names
+    - inventory_hostname == ((groups['manila_api'] | intersect(ansible_play_hosts)) | list)[0]
   tags:
     - manila-config
 
-- include: manila_uwsgi.yml
+- import_tasks: manila_uwsgi.yml
   tags:
     - manila-config
 
-- include: manila_service_setup.yml
-  static: no
-  when:
-    - "groups['manila_api'] | length > 0"
-    - "manila_services['manila-api']['group'] in group_names"
-    - "inventory_hostname == ((groups['manila_api'] | intersect(ansible_play_hosts)) | list)[0]"
-  tags:
-    - manila-config
-
-- name: Include ceph_client role
+- name: import_tasks ceph_client role
   include_role:
     name: ceph_client
   vars:
     openstack_service_system_user: "{{ manila_system_user_name }}"
-    openstack_service_venv_bin: "{{ (manila_install_method == 'source') | ternary(manila_bin,'/usr/local/bin') }}"
+    openstack_service_venv_bin: "{{ manila_bin }}"
   when:
-    - "manila_services['manila-share']['group'] in group_names"
-    - "manila_backend_rbd_inuse | bool"
+    - manila_services['manila_share']['group'] in group_names
+    - manila_backend_rbd_inuse | bool
   tags:
     - ceph
+
+- include_tasks: manila_backend_cephfs.yml
+  when:
+    - (manila_enabled_share_protocols | join('\n')) | regex_search('^ceph.*', multiline=True, ignorecase=True)
+    - manila_services['manila_share']['group'] in group_names
+  with_dict: "{{ _manila_backends | default({}) }}"
+  tags:
+    - manila-config
+
+- include_tasks: manila_service_setup.yml
+  when:
+    - groups['manila_api'] | length > 0
+    - manila_services['manila_api']['group'] in group_names
+    - inventory_hostname == ((groups['manila_api'] | intersect(ansible_play_hosts)) | list)[0]
+  tags:
+    - manila-config
 
 - name: Flush handlers
   meta: flush_handlers
 
-- include: manila_backends.yml
-  static: no
+- include_tasks: manila_backends.yml
   when:
-    - "groups[manila_services['manila-share']['group']] | length > 0"
-    - "manila_services['manila-api']['group'] in group_names"
-    - "inventory_hostname == ((groups[manila_services['manila-api']['group']] | intersect(ansible_play_hosts)) | list)[-1]"
+    - groups[manila_services['manila_share']['group']] | length > 0
+    - manila_services['manila_api']['group'] in group_names
+    - inventory_hostname == ((groups[manila_services['manila_api']['group']] | intersect(ansible_play_hosts)) | list)[-1]
   tags:
     - manila-config

@@ -20,16 +20,16 @@
 #
 manila_package_list: |-
   {% set packages = manila_service_distro_packages %}
-  {% if manila_services['manila-share']['group'] in group_names %}
+  {% if manila_services['manila_share']['group'] in group_names %}
   {%   set _ = packages.extend(manila_share_distro_packages) %}
   {%   if manila_backend_lvm_inuse | bool %}
   {%     set _ = packages.extend(manila_lvm_share_distro_packages) %}
   {%   endif %}
   {% endif %}
-  {% if manila_services['manila-api']['group'] in group_names %}
+  {% if manila_services['manila_api']['group'] in group_names %}
   {%   set _ = packages.extend(manila_api_distro_packages) %}
   {% endif %}
-  {% if manila_services['manila-scheduler']['group'] in group_names %}
+  {% if manila_services['manila_scheduler']['group'] in group_names %}
   {%   set _ = packages.extend(manila_scheduler_distro_packages) %}
   {% endif %}
   {% if manila_developer_mode | bool %}

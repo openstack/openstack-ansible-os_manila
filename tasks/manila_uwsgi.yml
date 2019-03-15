@@ -1,5 +1,5 @@
 ---
-# Copyright 2017, Rackspace US, Inc.
+# Copyright 2019, Rackspace US, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,7 +27,8 @@
     config_overrides: "{{ item.wsgi_overrides }}"
     config_type: ini
   with_items: "{{ filtered_manila_services }}"
-  when: item.wsgi_app | default(False)
+  when:
+    - item.wsgi_app | default(false)
   notify:
     - Manage LB
     - Restart manila services

@@ -5,10 +5,10 @@ Manila role for OpenStack-Ansible
 This Ansible role installs and configures OpenStack manila.
 
 The following manila services are managed by the role:
-    * manila-api
-    * manila-scheduler
-    * manila-share
-    * manila-data (untested)
+    * manila_api
+    * manila_scheduler
+    * manila_share
+    * manila_data (untested)
 
 .. toctree::
    :maxdepth: 2

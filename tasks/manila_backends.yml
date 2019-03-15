@@ -1,5 +1,5 @@
 ---
-# Copyright 2014, Rackspace US, Inc.
+# Copyright 2019, Rackspace US, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@
 - name: Create singular manila_backends variable for all hosts
   set_fact:
     _manila_backends: "{{ (_manila_backends | default(manila_backends | default({}))) | combine(hostvars[item]['manila_backends'] | default({})) }}"
-  with_items: "{{ groups[manila_services['manila-share']['group']] }}"
+  with_items: "{{ groups[manila_services['manila_share']['group']] }}"
 
 - name: Add in manila devices types
   shell: |
@@ -42,17 +42,9 @@
     CLI_OPTIONS="--endpoint-type internalURL {{ ((keystone_service_adminuri_insecure | bool) or (manila_service_internaluri_insecure | bool)) | ternary('--insecure','') }}"
     if ! {{ manila_bin }}/manila ${CLI_OPTIONS} type-list | grep -q "{{ item.key }}"; then
       {{ manila_bin }}/manila ${CLI_OPTIONS} type-create "{{ item.key }}" "{{ item.value.driver_handles_share_servers }}"
+      {{ manila_bin }}/manila ${CLI_OPTIONS} type-key "{{ item.key }}" set "share_backend_name={{ item.value.share_backend_name }}"
     fi
   args:
     executable: /bin/bash
-  with_dict: "{{ _manila_backends|default({}) }}"
+  with_dict: "{{ _manila_backends | default({}) }}"
   changed_when: false
-
-- include: manila_backend_cephfs.yml
-  static: no
-  when:
-    - (item|default("")|to_json).find("manila.share.drivers.cephfs") != -1
-    - "manila_services['manila-share']['group'] in group_names"
-  with_dict: "{{ _manila_backends|default({}) }}"
-  tags:
-    - manila-config

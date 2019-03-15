@@ -1,5 +1,5 @@
 ---
-# Copyright 2014, Rackspace US, Inc.
+# Copyright 2019, Rackspace US, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@
     name: "{{ manila_galera_database }}"
     state: "present"
   delegate_to: "{{ manila_db_setup_host }}"
-  no_log: True
+  no_log: true
 
 - name: Grant access to the DB for the service
   mysql_user:
@@ -37,7 +37,7 @@
   with_items:
     - "localhost"
     - "%"
-  no_log: True
+  no_log: true
 
 - name: Perform a manila DB sync
   command: "{{ manila_bin }}/manila-manage db sync"
@@ -50,8 +50,8 @@
   become: yes
   become_user: "{{ manila_system_user_name }}"
   when:
-    - "(manila_all_software_updated | default('no')) | bool"
-    - "ansible_local['openstack_ansible']['manila']['need_online_data_migrations'] | bool"
+    - (manila_all_software_updated | default(false)) | bool
+    - ansible_local['openstack_ansible']['manila']['need_online_data_migrations'] | bool
   changed_when: false
   register: data_migrations
 
@@ -60,7 +60,7 @@
     dest: "/etc/ansible/facts.d/openstack_ansible.fact"
     section: manila
     option: need_online_data_migrations
-    value: False
+    value: false
   when:
     - not data_migrations | skipped
     - data_migrations  is succeeded

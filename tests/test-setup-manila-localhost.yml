@@ -1,5 +1,5 @@
 ---
-# Copyright 2015, Rackspace US, Inc.
+# Copyright 2019, Rackspace US, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Prepare manila-shares share group
+- name: Prepare manila_shares share group
   hosts: localhost
   # This set of tasks runs against localhost
   # and requires root access, but tests run as
@@ -48,7 +48,7 @@
         - "pvcreate {{ manila_losetup.stdout }}"
         - "pvscan"
 
-    - name: Add manila-shares share group
+    - name: Add manila_shares share group
       lvg:
         vg: "{{ manila_lvm_vg_name | default('manila-shares') }}"
         pvs: "{{ manila_losetup.stdout }}"

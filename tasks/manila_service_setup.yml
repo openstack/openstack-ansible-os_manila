@@ -1,5 +1,5 @@
 ---
-# Copyright 2014, Rackspace US, Inc.
+# Copyright 2019, Rackspace US, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,8 +21,7 @@
 - name: Setup the service
   delegate_to: "{{ manila_service_setup_host }}"
   vars:
-    ansible_python_interpreter: >-
-      {{ (manila_service_setup_host == 'localhost') | ternary(ansible_playbook_python, ansible_python['executable']) }}
+    ansible_python_interpreter: "{{ (manila_service_setup_host == 'localhost') | ternary(ansible_playbook_python, ansible_python['executable']) }}"
   block:
     - name: Add services to the keystone service catalog
       os_keystone_service:

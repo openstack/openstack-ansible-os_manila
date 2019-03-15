@@ -1,5 +1,5 @@
 ---
-# Copyright 2014, Rackspace US, Inc.
+# Copyright 2019, Rackspace US, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -36,9 +36,27 @@
   retries: 5
   delay: 2
 
+- name: Install the python venv
+  include_role:
+    name: "python_venv_build"
+  vars:
+    venv_build_distro_package_list: "{{ manila_devel_distro_packages }}"
+    venv_install_destination_path: "{{ manila_bin | dirname }}"
+    venv_pip_install_args: "{{ manila_pip_install_args }}"
+    venv_pip_packages: >-
+      {{ manila_pip_packages |
+           union(manila_user_pip_packages) |
+             union(((manila_oslomsg_amqp1_enabled | bool) | ternary(manila_optional_oslomsg_amqp1_pip_packages, []))) }}
+    venv_facts_when_changed:
+      - section: "manila"
+        option: "venv_tag"
+        value: "{{ manila_venv_tag }}"
+  when: manila_install_method == 'source'
+
 - name: Install manila packages from PIP
   include_tasks: manila_install_source.yml
-  when: manila_install_method == 'source'
+  when:
+    - manila_install_method == 'source'
 
 - name: Run the systemd service role
   include_role:
@@ -54,16 +72,22 @@
     systemd_BlockIOAccounting: true
     systemd_MemoryAccounting: true
     systemd_TasksAccounting: true
-    systemd_services:
-      - service_name: "{{ service_var.service_name }}"
-        enabled: yes
-        state: started
-        execstarts: "{{ service_var.execstarts }}"
-        execreloads: "{{ service_var.execreloads | default([]) }}"
-        config_overrides: "{{ manila_environment_overrides | combine(service_var.init_config_overrides) }}"
-  with_items: "{{ filtered_manila_services }}"
-  loop_control:
-    loop_var: service_var
+    systemd_services: |-
+      {% set services = [] %}
+      {% for service in filtered_manila_services %}
+      {%
+        set _ = service.update(
+          {
+            'enabled': 'yes',
+            'state': 'started',
+            'config_overrides': service.init_config_overrides
+          }
+        )
+      %}
+      {%   set _ = service.pop('init_config_overrides') -%}
+      {%   set _ = services.append(service) -%}
+      {% endfor %}
+      {{ services }}
   tags:
     - manila-config
     - systemd-service
@@ -78,6 +102,6 @@
     - "need_online_data_migrations"
     - "need_service_restart"
   when:
-        (install_packages | changed) or
-        ('need_online_data_migrations' not in ansible_local['openstack_ansible']['manila']) or
-        ('need_service_restart' not in ansible_local['openstack_ansible']['manila'])
+    - (install_packages is changed) or
+      ('need_online_data_migrations' not in ansible_local['openstack_ansible']['manila']) or
+      ('need_service_restart' not in ansible_local['openstack_ansible']['manila'])

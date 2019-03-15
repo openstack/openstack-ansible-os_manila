@@ -37,14 +37,14 @@ storage_availability_zone = {{ manila_storage_availability_zone }}
 client_socket_timeout = {{ manila_client_socket_timeout }}
 
 {% if manila_enabled_share_protocols is defined %}
-enabled_share_protocols={{ manila_enabled_share_protocols }}
+enabled_share_protocols={{ manila_enabled_share_protocols | join(',') }}
 {% endif %}
 
 {% if manila_backends is defined %}
-enabled_share_backends={% for backend in manila_backends|dictsort %}{{ backend.0 }}{% if not loop.last %},{% endif %}{% endfor %}
+enabled_share_backends={% for backend in manila_backends | dictsort %}{{ backend.0 }}{% if not loop.last %},{% endif %}{% endfor %}
 
 # All given backend(s)
-{% for backend_section in manila_backends|dictsort %}
+{% for backend_section in manila_backends | dictsort %}
 [{{ backend_section.0 }}]
 {% for key, value in (backend_section.1 | dictsort) if key not in ['extra_share_types', 'shares'] %}
 {{ key }}={{ value }}
@@ -60,7 +60,7 @@ connection = mysql+pymysql://{{ manila_galera_user }}:{{ manila_container_mysql_
 ssl = {{ manila_oslomsg_rpc_use_ssl }}
 
 [oslo_messaging_notifications]
-driver = {% if manila_ceilometer_enabled %}messagingv2{% else %}noop{% endif %}
+driver = {{ (manila_ceilometer_enabled | bool) | ternary('messagingv2', 'noop') }}
 transport_url = {{ manila_oslomsg_notify_transport }}://{% for host in manila_oslomsg_notify_servers.split(',') %}{{ manila_oslomsg_notify_userid }}:{{ manila_oslomsg_notify_password }}@{{ host }}:{{ manila_oslomsg_notify_port }}{% if not loop.last %},{% else %}/{{ manila_oslomsg_notify_vhost }}{% if manila_oslomsg_notify_use_ssl | bool %}?ssl=1{% else %}?ssl=0{% endif %}{% endif %}{% endfor %}
 
 [oslo_concurrency]
