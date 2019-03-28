@@ -40,6 +40,7 @@
   include_role:
     name: "python_venv_build"
   vars:
+    venv_build_constraints: "{{ manila_git_constraints }}"
     venv_build_distro_package_list: "{{ manila_devel_distro_packages }}"
     venv_install_destination_path: "{{ manila_bin | dirname }}"
     venv_pip_install_args: "{{ manila_pip_install_args }}"
@@ -52,11 +53,6 @@
         option: "venv_tag"
         value: "{{ manila_venv_tag }}"
   when: manila_install_method == 'source'
-
-- name: Install manila packages from PIP
-  include_tasks: manila_install_source.yml
-  when:
-    - manila_install_method == 'source'
 
 - name: Run the systemd service role
   include_role:
