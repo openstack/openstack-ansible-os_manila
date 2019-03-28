@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Copyright 2019, Rackspace US, Inc.
+# Copyright 2015, Rackspace US, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -59,7 +59,8 @@ case ${ID,,} in
     *suse*) pkg_mgr_cmd="zypper -n in" ;;
     centos|rhel|fedora) pkg_mgr_cmd="${RHT_PKG_MGR} install -y" ;;
     ubuntu|debian) pkg_mgr_cmd="apt-get install -y" ;;
-    gentoo) pkg_mgr_cmd="emerge" ;;
+    # Gentoo needs to have version set since it's rolling
+    gentoo) pkg_mgr_cmd="emerge --jobs=4"; VERSION="rolling" ;;
     *) echo "unsupported distribution: ${ID,,}"; exit 1 ;;
 esac
 
