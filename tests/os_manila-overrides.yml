@@ -110,7 +110,6 @@ test_manila_share_group: "{{ ((groups['manila_share'] is defined) and (groups['m
 test_manila_api_host: "{{ hostvars[groups[test_manila_api_group][0]]['ansible_host'] }}"
 test_manila_share_host: "{{ hostvars[groups[test_manila_share_group][0]]['ansible_host'] }}"
 manila_container_mysql_password: "SuperSecrete"
-manila_developer_mode: true
 manila_git_install_branch: "{{ test_branch }}"
 manila_profiler_hmac_key: "secrete"
 manila_oslomsg_rpc_password: "secrete"

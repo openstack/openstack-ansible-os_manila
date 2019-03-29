@@ -31,7 +31,7 @@ manila_git_install_branch: master
 manila_upper_constraints_url: "{{ requirements_git_url | default('https://git.openstack.org/cgit/openstack/requirements/plain/upper-constraints.txt?h=' ~ requirements_git_install_branch | default('master')) }}"
 manila_git_constraints:
   - "git+{{ manila_git_repo }}@{{ manila_git_install_branch }}#egg=manila"
-  - "--constraint {{ barbican_upper_constraints_url }}"
+  - "--constraint {{ manila_upper_constraints_url }}"
 
 manila_pip_install_args: "{{ pip_install_options | default('') }}"
 

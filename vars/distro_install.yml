@@ -32,9 +32,6 @@ manila_package_list: |-
   {% if manila_services['manila_scheduler']['group'] in group_names %}
   {%   set _ = packages.extend(manila_scheduler_distro_packages) %}
   {% endif %}
-  {% if manila_developer_mode | bool %}
-  {%   set _ = packages.extend(manila_devel_distro_packages) %}
-  {% endif %}
   {% if manila_oslomsg_amqp1_enabled | bool %}
   {%   set _ = packages.extend(manila_oslomsg_amqp1_distro_packages) %}
   {% endif %}
