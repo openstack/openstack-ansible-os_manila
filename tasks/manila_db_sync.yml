@@ -13,32 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Create DB for service
-  mysql_db:
-    login_user: "{{ galera_root_user }}"
-    login_password: "{{ galera_root_password }}"
-    login_host: "{{ manila_galera_address }}"
-    name: "{{ manila_galera_database }}"
-    state: "present"
-  delegate_to: "{{ manila_db_setup_host }}"
-  no_log: true
-
-- name: Grant access to the DB for the service
-  mysql_user:
-    login_user: "{{ galera_root_user }}"
-    login_password: "{{ galera_root_password }}"
-    login_host: "{{ manila_galera_address }}"
-    name: "{{ manila_galera_user }}"
-    password: "{{ manila_container_mysql_password }}"
-    host: "{{ item }}"
-    state: "present"
-    priv: "{{ manila_galera_database }}.*:ALL"
-  delegate_to: "{{ manila_db_setup_host }}"
-  with_items:
-    - "localhost"
-    - "%"
-  no_log: true
-
 - name: Perform a manila DB sync
   command: "{{ manila_bin }}/manila-manage db sync"
   become: yes
