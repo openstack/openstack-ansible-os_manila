@@ -93,37 +93,31 @@ memcache_secret_key = {{ memcached_encryption_key }}
 
 [neutron]
 url = http://{{ internal_lb_vip_address }}:9696
-www_authenticate_uri = {{ keystone_service_internaluri }}
 auth_url = {{ keystone_service_adminurl }}
-memcached_servers = {{ memcached_servers }}
 auth_type = {{ manila_keystone_auth_plugin }}
 project_domain_name = {{ neutron_service_domain_name | default("Default") }}
 user_domain_name = {{ neutron_service_domain_name | default("Default") }}
-region_name = {{ neutron_service_region }}
-project_name = {{ neutron_service_project_name }}
-username = {{ neutron_service_user_name }}
+region_name = {{ neutron_service_region | default(manila_service_region) }}
+project_name = {{ neutron_service_project_name | default("service") }}
+username = {{ neutron_service_user_name | default("neutron") }}
 password = {{ neutron_service_password }}
 
 [nova]
-www_authenticate_uri = {{ keystone_service_internaluri }}
 auth_url = {{ keystone_service_adminurl }}
-memcached_servers = {{ memcached_servers }}
 auth_type = {{ manila_keystone_auth_plugin }}
 project_domain_name = {{ nova_service_domain_name | default("Default") }}
 user_domain_name = {{ nova_service_domain_name | default("Default") }}
-region_name = {{ nova_service_region }}
-project_name = {{ nova_service_project_name }}
-username = {{ nova_service_user_name }}
+region_name = {{ nova_service_region | default(manila_service_region) }}
+project_name = {{ nova_service_project_name | default("service") }}
+username = {{ nova_service_user_name | default("nova") }}
 password = {{ nova_service_password }}
 
 [cinder]
-www_authenticate_uri = {{ keystone_service_internaluri }}
 auth_url = {{ keystone_service_adminurl }}
-memcached_servers = {{ memcached_servers }}
 auth_type = {{ manila_keystone_auth_plugin }}
 project_domain_name = {{ cinder_service_domain_name | default("Default") }}
 user_domain_name = {{ cinder_service_domain_name | default("Default") }}
-region_name = {{ cinder_service_region | default("RegionOne") }}
+region_name = {{ cinder_service_region | default(manila_service_region) }}
 project_name = {{ cinder_service_project_name | default("service") }}
 username = {{ cinder_service_user_name | default("cinder") }}
-password = {{ cinder_service_password | default("secrete") }}
+password = {{ cinder_service_password }}
