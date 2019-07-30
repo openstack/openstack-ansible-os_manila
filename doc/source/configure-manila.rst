@@ -75,14 +75,14 @@ local NFS server to serve those volumes as shares.
 
       driver_handles_share_servers: False
 
-#. Configure the IP address or hostname of the share server.
+#. Configure the IP address/es or hostnames of the share server.
 
    .. code-block:: yaml
 
-      lvm_share_export_ip: "IP_ADDRESS"
+      lvm_share_export_ips: "IP_ADDRESS"
 
-   Replace ``IP_ADDRESS`` with the IP address or hostname where the
-   nfs shares will be exported from.
+   Replace ``IP_ADDRESS`` with a comma separated string of one or more IP
+   addresses or hostnames where the nfs shares will be exported from.
 
 The following is a full configuration example of a manila LVM backend
 named NFS_SHARE1.  The manila playbooks will automatically add a custom
@@ -100,4 +100,4 @@ named NFS_SHARE1.  The manila playbooks will automatically add a custom
            share_driver: manila.share.drivers.lvm.LVMShareDriver
            driver_handles_share_servers: False
            lvm_share_volume_group: manila-shares
-           lvm_share_export_ip: "172.29.236.100"
+           lvm_share_export_ips: 172.29.236.100
