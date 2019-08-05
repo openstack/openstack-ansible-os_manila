@@ -13,32 +13,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+- name: Fetch rootwrap files
+  fetch:
+    src: "{{ item.source }}"
+    dest: "{{ item.src }}"
+    flat: yes
+  changed_when: false
+  with_items: "{{ manila_rootwrap_files }}"
+  when: item.condition | default(True)
+  run_once: true
+
 - name: Copy manila configs
   config_template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
     owner: "root"
     group: "{{ item.group|default(manila_system_group_name) }}"
-    mode: "0640"
-    config_overrides: "{{ item.config_overrides }}"
+    mode: "{{ item.mode |default('0640') }}"
+    config_overrides: "{{ item.config_overrides | default({}) }}"
     config_type: "{{ item.config_type }}"
-  with_items:
-    - src: "manila.conf.j2"
-      dest: "/etc/manila/manila.conf"
-      config_overrides: "{{ manila_manila_conf_overrides }}"
-      config_type: "ini"
-    - src: "api-paste.ini.j2"
-      dest: "/etc/manila/api-paste.ini"
-      config_overrides: "{{ manila_api_paste_ini_overrides }}"
-      config_type: "ini"
-    - src: "rootwrap.conf.j2"
-      dest: "/etc/manila/rootwrap.conf"
-      config_overrides: "{{ manila_rootwrap_conf_overrides }}"
-      config_type: "ini"
-    - src: "policy.json.j2"
-      dest: "/etc/manila/policy.json-{{ manila_venv_tag }}"
-      config_overrides: "{{ manila_policy_overrides }}"
-      config_type: "json"
+  when: item.condition | default(True)
+  with_items: "{{ manila_core_files + manila_rootwrap_files }}"
   notify:
     - Manage LB
     - Restart manila services
