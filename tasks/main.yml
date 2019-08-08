@@ -70,8 +70,8 @@
 
 - import_tasks: db_setup.yml
   when:
-    - "manila_services['manila-api']['group'] in group_names"
-    - "inventory_hostname == ((groups[manila_services['manila-api']['group']]| intersect(ansible_play_hosts)) | list)[0]"
+    - "manila_services['manila_api']['group'] in group_names"
+    - "inventory_hostname == ((groups[manila_services['manila_api']['group']]| intersect(ansible_play_hosts)) | list)[0]"
   vars:
     _oslodb_setup_host: "{{ manila_db_setup_host }}"
     _oslodb_databases:
