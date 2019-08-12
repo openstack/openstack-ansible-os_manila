@@ -43,6 +43,7 @@ manila_share_distro_packages: []
 
 manila_share_deps_distro_packages:
   - qemu-tools
+  - sqlite3
 
 manila_lvm_share_distro_packages:
   - device-mapper

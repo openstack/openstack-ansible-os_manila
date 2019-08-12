@@ -91,6 +91,7 @@ token_cache_time = 300
 memcache_security_strategy = ENCRYPT
 memcache_secret_key = {{ memcached_encryption_key }}
 
+{% if (manila_backends | to_json).find('manila.share.drivers.generic') != -1 %}
 [neutron]
 url = http://{{ internal_lb_vip_address }}:9696
 auth_url = {{ keystone_service_adminurl }}
@@ -121,3 +122,4 @@ region_name = {{ cinder_service_region | default(manila_service_region) }}
 project_name = {{ cinder_service_project_name | default("service") }}
 username = {{ cinder_service_user_name | default("cinder") }}
 password = {{ cinder_service_password }}
+{% endif %}

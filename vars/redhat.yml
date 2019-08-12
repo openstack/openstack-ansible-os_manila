@@ -43,6 +43,7 @@ manila_share_distro_packages: []
 
 manila_share_deps_distro_packages:
   - "qemu-img{% if ansible_distribution_major_version|int <= 7 %}-ev{% endif %}"
+  - sqlite
 
 manila_lvm_share_distro_packages:
   - device-mapper-event
