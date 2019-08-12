@@ -29,3 +29,32 @@ filtered_manila_services: |-
   {%   endif %}
   {% endfor %}
   {{ services | sort(attribute='start_order') }}
+
+manila_core_files:
+  - src: "manila.conf.j2"
+    dest: "/etc/manila/manila.conf"
+    config_overrides: "{{ manila_manila_conf_overrides }}"
+    config_type: "ini"
+  - src: "policy.json.j2"
+    dest: "/etc/manila/policy.json-{{ manila_venv_tag }}"
+    config_overrides: "{{ manila_policy_overrides }}"
+    config_type: "json"
+
+manila_rootwrap_files:
+  - condition: "{{ manila_install_method == 'source' }}"
+    config_overrides: "{{ manila_rootwrap_conf_overrides }}"
+    config_type: ini
+    dest: /etc/manila/rootwrap.conf
+    source: "{{ manila_bin | dirname }}/etc/manila/rootwrap.conf"
+    src: /tmp/rootwrap.conf
+  - condition: "{{ manila_install_method == 'source' and 'manila_share' in group_names }}"
+    config_type: ini
+    dest: /etc/manila/rootwrap.d/share.filters
+    source: "{{ manila_bin | dirname }}/etc/manila/rootwrap.d/share.filters"
+    src: /tmp/manila-share.filters
+  - condition: "{{ manila_install_method == 'source' and 'manila_api' in group_names }}"
+    config_type: "ini"
+    config_overrides: "{{ manila_api_paste_ini_overrides }}"
+    source: "{{ manila_bin | dirname }}/etc/manila/api-paste.ini"
+    src: "/tmp/api-paste.ini"
+    dest: "/etc/manila/api-paste.ini"
