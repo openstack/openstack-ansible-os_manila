@@ -25,6 +25,7 @@ manila_service_setup_host: "{{ openstack_service_setup_host | default('localhost
 
 # Set installation method.
 manila_install_method: "source"
+manila_venv_python_executable: "{{ openstack_venv_python_executable | default('python2') }}"
 
 manila_git_repo: https://git.openstack.org/openstack/manila
 manila_git_install_branch: master
