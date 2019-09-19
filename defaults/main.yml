@@ -47,7 +47,7 @@ manila_storage_availability_zone: nova
 manila_default_availability_zone: "{{ manila_storage_availability_zone }}"
 
 manila_management_address: 127.0.0.1
-manila_uwsgi_bind_address: 0.0.0.0
+manila_uwsgi_bind_address: "{{ openstack_service_bind_address | default('0.0.0.0') }}"
 
 manila_fatal_deprecations: False
 
