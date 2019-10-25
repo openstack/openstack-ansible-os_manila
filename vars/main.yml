@@ -58,3 +58,29 @@ manila_rootwrap_files:
     source: "{{ manila_bin | dirname }}/etc/manila/api-paste.ini"
     src: "/tmp/api-paste.ini"
     dest: "/etc/manila/api-paste.ini"
+
+manila_service_endpoints:
+  - service: "{{ manila_service_name }}"
+    interface: "public"
+    url: "{{ manila_service_publicurl }}"
+    state: present
+  - service: "{{ manila_service_name }}"
+    interface: "internal"
+    url: "{{ manila_service_internalurl }}"
+    state: present
+  - service: "{{ manila_service_name }}"
+    interface: "admin"
+    url: "{{ manila_service_adminurl }}"
+    state: present
+  - service: "{{ manila_service_v2_name }}"
+    interface: "public"
+    url: "{{ manila_service_v2_publicurl }}"
+    state: "{{ (manila_enable_v2_api | bool) | ternary('present', 'absent') }}"
+  - service: "{{ manila_service_v2_name }}"
+    interface: "internal"
+    url: "{{ manila_service_v2_internalurl }}"
+    state: "{{ (manila_enable_v2_api | bool) | ternary('present', 'absent') }}"
+  - service: "{{ manila_service_v2_name }}"
+    interface: "admin"
+    url: "{{ manila_service_v2_adminurl }}"
+    state: "{{ (manila_enable_v2_api | bool) | ternary('present', 'absent') }}"
