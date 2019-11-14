@@ -27,9 +27,9 @@ manila_service_setup_host: "{{ openstack_service_setup_host | default('localhost
 manila_install_method: "source"
 manila_venv_python_executable: "{{ openstack_venv_python_executable | default('python2') }}"
 
-manila_git_repo: https://git.openstack.org/openstack/manila
+manila_git_repo: https://opendev.org/openstack/manila
 manila_git_install_branch: master
-manila_upper_constraints_url: "{{ requirements_git_url | default('https://git.openstack.org/cgit/openstack/requirements/plain/upper-constraints.txt?h=' ~ requirements_git_install_branch | default('master')) }}"
+manila_upper_constraints_url: "{{ requirements_git_url | default('https://releases.openstack.org/constraints/upper/' ~ requirements_git_install_branch | default('master')) }}"
 manila_git_constraints:
   - "git+{{ manila_git_repo }}@{{ manila_git_install_branch }}#egg=manila"
   - "--constraint {{ manila_upper_constraints_url }}"

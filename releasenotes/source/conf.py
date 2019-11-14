@@ -58,13 +58,13 @@ category = 'Miscellaneous'
 copyright = '2014-2016, OpenStack-Ansible Contributors'
 description = 'OpenStack-Ansible deploys OpenStack environments using Ansible.'
 project = 'OpenStack-Ansible'
-role_name = 'os_placement'
+role_name = 'os_manila'
 target_name = 'openstack-ansible-' + role_name
 title = 'OpenStack-Ansible Release Notes: ' + role_name + 'role'
 
 # The link to the browsable source code (for the left hand menu)
 oslosphinx_cgit_link = (
-    'https://git.openstack.org/cgit/openstack/{}'.format(target_name)
+    'https://opendev.org/openstack/{}'.format(target_name)
 )
 
 # Release notes do not need a version number in the title, they
