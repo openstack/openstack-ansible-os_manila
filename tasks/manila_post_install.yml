@@ -36,6 +36,7 @@
   notify:
     - Manage LB
     - Restart manila services
+    - Restart uwsgi services
 
 - name: Drop sudoers file
   template:
