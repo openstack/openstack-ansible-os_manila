@@ -232,28 +232,28 @@ manila_data_init_overrides: {}
 
 ## Service Name-Group Mapping
 manila_services:
-  manila_scheduler:
+  manila-scheduler:
     group: manila_scheduler
     service_name: manila-scheduler
     init_config_overrides: "{{ manila_scheduler_init_overrides }}"
     start_order: 1
     execstarts: "{{ manila_bin }}/manila-scheduler"
     execreloads: "/bin/kill -HUP $MAINPID"
-  manila_share:
+  manila-share:
     group: manila_share
     service_name: manila-share
     init_config_overrides: "{{ manila_share_init_overrides }}"
     start_order: 2
     execstarts: "{{ manila_bin }}/manila-share"
     execreloads: "/bin/kill -HUP $MAINPID"
-  manila_data:
+  manila-data:
     group: manila_share
     service_name: manila-data
     init_config_overrides: "{{ manila_data_init_overrides }}"
     start_order: 3
     execstarts: "{{ manila_bin }}/manila-data"
     execreloads: "/bin/kill -HUP $MAINPID"
-  manila_api:
+  manila-api:
     group: manila_api
     service_name: manila-api
     init_config_overrides: "{{ manila_api_init_overrides }}"

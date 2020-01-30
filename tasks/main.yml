@@ -63,15 +63,15 @@
 
 - import_tasks: manila_lvm_config.yml
   when:
-    - manila_services['manila_share']['group'] in group_names
+    - manila_services['manila-share']['group'] in group_names
     - manila_backend_lvm_inuse | bool
   tags:
     - manila-config
 
 - import_tasks: db_setup.yml
   when:
-    - "manila_services['manila_api']['group'] in group_names"
-    - "inventory_hostname == ((groups[manila_services['manila_api']['group']]| intersect(ansible_play_hosts)) | list)[0]"
+    - "manila_services['manila-api']['group'] in group_names"
+    - "inventory_hostname == ((groups[manila_services['manila-api']['group']]| intersect(ansible_play_hosts)) | list)[0]"
   vars:
     _oslodb_setup_host: "{{ manila_db_setup_host }}"
     _oslodb_databases:
@@ -85,8 +85,8 @@
 
 - include_tasks: mq_setup.yml
   when:
-    - "manila_services['manila_api']['group'] in group_names"
-    - "inventory_hostname == ((groups[manila_services['manila_api']['group']]| intersect(ansible_play_hosts)) | list)[0]"
+    - "manila_services['manila-api']['group'] in group_names"
+    - "inventory_hostname == ((groups[manila_services['manila-api']['group']]| intersect(ansible_play_hosts)) | list)[0]"
   vars:
     _oslomsg_rpc_setup_host: "{{ manila_oslomsg_rpc_setup_host }}"
     _oslomsg_rpc_userid: "{{ manila_oslomsg_rpc_userid }}"
@@ -128,7 +128,7 @@
 - include_tasks: manila_db_sync.yml
   when:
     - groups['manila_api'] | length > 0
-    - manila_services['manila_api']['group'] in group_names
+    - manila_services['manila-api']['group'] in group_names
     - inventory_hostname == ((groups['manila_api'] | intersect(ansible_play_hosts)) | list)[0]
   tags:
     - manila-config
@@ -144,7 +144,7 @@
     openstack_service_system_user: "{{ manila_system_user_name }}"
     openstack_service_venv_bin: "{{ manila_bin }}"
   when:
-    - manila_services['manila_share']['group'] in group_names
+    - manila_services['manila-share']['group'] in group_names
     - manila_backend_rbd_inuse | bool
   tags:
     - ceph
@@ -152,7 +152,7 @@
 - include_tasks: manila_backend_cephfs.yml
   when:
     - (manila_enabled_share_protocols | join('\n')) | regex_search('^ceph.*', multiline=True, ignorecase=True)
-    - manila_services['manila_share']['group'] in group_names
+    - manila_services['manila-share']['group'] in group_names
   with_dict: "{{ _manila_backends | default({}) }}"
   tags:
     - manila-config
@@ -179,7 +179,7 @@
         description: "{{ manila_service_v2_description }}"
   when:
     - groups['manila_api'] | length > 0
-    - manila_services['manila_api']['group'] in group_names
+    - manila_services['manila-api']['group'] in group_names
     - inventory_hostname == ((groups['manila_api'] | intersect(ansible_play_hosts)) | list)[0]
   tags:
     - manila-config
@@ -189,8 +189,8 @@
 
 - include_tasks: manila_backends.yml
   when:
-    - groups[manila_services['manila_share']['group']] | length > 0
-    - manila_services['manila_api']['group'] in group_names
-    - inventory_hostname == ((groups[manila_services['manila_api']['group']] | intersect(ansible_play_hosts)) | list)[-1]
+    - groups[manila_services['manila-share']['group']] | length > 0
+    - manila_services['manila-api']['group'] in group_names
+    - inventory_hostname == ((groups[manila_services['manila-api']['group']] | intersect(ansible_play_hosts)) | list)[-1]
   tags:
     - manila-config
