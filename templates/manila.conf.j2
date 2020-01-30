@@ -15,7 +15,6 @@ osapi_share_workers = {{ manila_osapi_share_workers }}
 
 rootwrap_config = /etc/manila/rootwrap.conf
 api_paste_config = /etc/manila/api-paste.ini
-auth_strategy = {{ manila_auth_strategy }}
 
 ## RabbitMQ RPC
 executor_thread_pool_size = {{ manila_rpc_executor_thread_pool_size }}
@@ -30,11 +29,7 @@ quota_gigabytes = {{ manila_quota_gigabytes }}
 quota_snapshot_gigabytes = {{ manila_quota_snapshot_gigabytes }}
 quota_share_networks = {{ manila_quota_share_networks }}
 
-os_region_name = {{ manila_service_region }}
-
 storage_availability_zone = {{ manila_storage_availability_zone }}
-
-client_socket_timeout = {{ manila_client_socket_timeout }}
 
 {% if manila_enabled_share_protocols is defined %}
 enabled_share_protocols={{ manila_enabled_share_protocols | join(',') }}
