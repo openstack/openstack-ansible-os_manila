@@ -13,33 +13,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Set _cephfs_mount_dir fact
-  set_fact:
-    _cephfs_mount_dir: /mnt/cephfs-ansible-mount
-    _cephfs_auth_id: "{{ item.value.cephfs_auth_id|default('manila') }}"
-
 - name: Create temporary mount dir
-  file:
-    name: "{{ _cephfs_mount_dir }}"
+  tempfile:
     state: directory
+    suffix: manila_cephfs
+  register: _cephfs_mount_dir
 
 - name: Mount CephFS
   command: |
-    ceph-fuse --id "{{ _cephfs_auth_id }}" "{{ _cephfs_mount_dir }}"
+    ceph-fuse --id "{{ item.value.cephfs_auth_id|default('manila') }}" "{{ _cephfs_mount_dir.path }}"
   changed_when: false
 
 - name: Ensure CephFS volumes dir permissions
   file:
-    name: "{{ _cephfs_mount_dir }}/volumes"
+    name: "{{ _cephfs_mount_dir.path }}/volumes"
     state: directory
     owner: "{{ manila_system_user_name }}"
 
 - name: Unmount CephFS
   mount:
-    path: "{{ _cephfs_mount_dir }}"
+    path: "{{ _cephfs_mount_dir.path }}"
     state: unmounted
 
 - name: Remove temporary mount dir
   file:
-    name: "{{ _cephfs_mount_dir }}"
+    name: "{{ _cephfs_mount_dir.path }}"
     state: absent

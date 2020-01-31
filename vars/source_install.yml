@@ -25,6 +25,9 @@ manila_package_list: |-
   {%   if manila_backend_lvm_inuse | bool %}
   {%     set _ = packages.extend(manila_lvm_share_distro_packages) %}
   {%   endif %}
+  {%   if manila_backend_rbd_inuse | bool %}
+  {%     set _ = packages.extend(manila_rbd_share_distro_packages) %}
+  {%   endif %}
   {% endif %}
   {% if manila_oslomsg_amqp1_enabled | bool %}
   {%   set _ = packages.extend(manila_oslomsg_amqp1_distro_packages) %}

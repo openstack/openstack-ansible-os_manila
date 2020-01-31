@@ -50,6 +50,9 @@ manila_lvm_share_distro_packages:
   - lvm2
   - parted
 
+manila_rbd_share_distro_packages:
+  - ceph-fuse
+
 manila_oslomsg_amqp1_distro_packages:
   - cyrus-sasl
   - cyrus-sasl-plain
