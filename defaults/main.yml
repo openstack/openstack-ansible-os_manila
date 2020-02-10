@@ -151,8 +151,6 @@ manila_service_v2_adminurl: "{{ manila_service_adminuri }}/v2/%(tenant_id)s"
 manila_service_v2_internaluri: "{{ manila_service_internaluri_proto }}://{{ internal_lb_vip_address }}:{{ manila_service_port }}"
 manila_service_v2_internalurl: "{{ manila_service_internaluri }}/v2/%(tenant_id)s"
 
-manila_auth_strategy: keystone
-
 ## Keystone authentication middleware
 manila_keystone_auth_plugin: "{{ manila_keystone_auth_type }}"
 manila_keystone_auth_type: password
@@ -172,8 +170,6 @@ manila_rpc_response_timeout: 60
 manila_profiler_enabled: false
 # manila_profiler_hmac_key is set in user_secrets.yml
 manila_profiler_trace_sqlalchemy: false
-
-manila_client_socket_timeout: 900
 
 ## Manila quota
 manila_quota_shares: 50
