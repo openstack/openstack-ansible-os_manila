@@ -288,3 +288,11 @@ manila_api_uwsgi_ini_overrides: {}
 manila_environment_overrides:
   Service:
     Environment: "PATH={{ manila_bin }}:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+# Manila keypair
+#
+# The following path ontains the keypair which will be used for SSH.  It requires that
+# the same file with a trailing .pub exists as well if using an existing key.  If this
+# is set and a key cannot be found it will generate one.
+#
+# manila_keypair_path: /etc/openstack_deploy/id_rsa

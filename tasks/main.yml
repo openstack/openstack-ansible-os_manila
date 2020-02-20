@@ -115,7 +115,14 @@
   tags:
     - manila-config
 
-- import_tasks: manila_db_sync.yml
+- import_tasks: manila_keys.yml
+  when:
+    - manila_keypair_path is defined
+    - manila_services['manila-share']['group'] in group_names
+  tags:
+    - manila-config
+
+- include_tasks: manila_db_sync.yml
   when:
     - _manila_is_first_play_host
   tags:
