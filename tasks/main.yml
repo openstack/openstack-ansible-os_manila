@@ -143,7 +143,7 @@
     _service_adminuri_insecure: "{{ keystone_service_adminuri_insecure }}"
     _service_in_ldap: "{{ manila_service_in_ldap }}"
     _service_setup_host: "{{ manila_service_setup_host }}"
-    _service_setup_host_python_interpreter: "{{ (manila_service_setup_host == 'localhost') | ternary(ansible_playbook_python, ansible_python['executable']) }}"
+    _service_setup_host_python_interpreter: "{{ manila_service_setup_host_python_interpreter }}"
     _service_project_name: "{{ manila_service_project_name }}"
     _service_region: "{{ manila_service_region }}"
     _service_endpoints: "{{ manila_service_endpoints }}"
