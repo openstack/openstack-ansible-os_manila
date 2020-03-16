@@ -211,10 +211,14 @@ manila_pip_packages:
   - keystonemiddleware
   - osprofiler
   - PyMySQL
+  - pymemcache
   - python-openstackclient
   - python-memcached
   - systemd-python
   - uwsgi
+
+# Memcached override
+manila_memcached_servers: "{{ memcached_servers }}"
 
 manila_user_pip_packages: []
 
