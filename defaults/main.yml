@@ -276,12 +276,6 @@ manila_wsgi_processes: "{{ [[ansible_processor_vcpus|default(1), 1] | max * 2, m
 manila_wsgi_threads: 1
 manila_wsgi_buffer_size: 65535
 
-# This variable is used by the repo_build process to determine
-# which host group to check for members of before building the
-# pip packages required by this role. The value is picked up
-# by the py_pkgs lookup.
-manila_role_project_group: manila_all
-
 manila_default_share_type: nfs
 manila_share_name_template: share-%s
 
