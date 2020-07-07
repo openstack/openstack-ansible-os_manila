@@ -29,7 +29,7 @@ manila_service_distro_packages:
   - openstack-manila
   - python-manilaclient
   - python2-shade
-  - systemd-python
+  - "{{ ansible_distribution_major_version is version('8', '<') | ternary('systemd-python', 'python3-systemd') }}"
   - uwsgi
   - uwsgi-python
 
