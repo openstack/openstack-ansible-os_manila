@@ -134,7 +134,7 @@
     name: ceph_client
   vars:
     openstack_service_system_user: "{{ manila_system_user_name }}"
-    openstack_service_venv_bin: "{{ manila_bin }}"
+    openstack_service_venv_bin: "{{ (manila_install_method == 'source') | ternary(manila_bin, '') }}"
   when:
     - manila_services['manila-share']['group'] in group_names
     - manila_backend_rbd_inuse | bool
