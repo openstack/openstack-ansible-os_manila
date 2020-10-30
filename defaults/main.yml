@@ -163,7 +163,7 @@ manila_service_data_program_enabled: false
 
 ## Cap the maximun number of threads / workers when a user value is unspecified.
 manila_osapi_share_workers_max: 16
-manila_osapi_share_workers: "{{ [[ansible_processor_vcpus|default(2) // 2, 1] | max, manila_osapi_share_workers_max] | min }}"
+manila_osapi_share_workers: "{{ [[(ansible_processor_vcpus//ansible_processor_threads_per_core)|default(1), 1] | max * 2, manila_osapi_share_workers_max] | min }}"
 
 ## Manila RPC
 manila_rpc_executor_thread_pool_size: 64
