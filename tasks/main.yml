@@ -70,8 +70,7 @@
 
 - import_tasks: db_setup.yml
   when:
-    - "manila_services['manila-api']['group'] in group_names"
-    - "inventory_hostname == ((groups[manila_services['manila-api']['group']]| intersect(ansible_play_hosts)) | list)[0]"
+    - _manila_is_first_play_host
   vars:
     _oslodb_setup_host: "{{ manila_db_setup_host }}"
     _oslodb_ansible_python_interpreter: "{{ manila_db_setup_python_interpreter }}"
@@ -88,8 +87,7 @@
 
 - import_tasks: mq_setup.yml
   when:
-    - "manila_services['manila-api']['group'] in group_names"
-    - "inventory_hostname == ((groups[manila_services['manila-api']['group']]| intersect(ansible_play_hosts)) | list)[0]"
+    - _manila_is_first_play_host
   vars:
     _oslomsg_rpc_setup_host: "{{ manila_oslomsg_rpc_setup_host }}"
     _oslomsg_rpc_userid: "{{ manila_oslomsg_rpc_userid }}"
@@ -119,9 +117,7 @@
 
 - import_tasks: manila_db_sync.yml
   when:
-    - groups['manila_api'] | length > 0
-    - manila_services['manila-api']['group'] in group_names
-    - inventory_hostname == ((groups['manila_api'] | intersect(ansible_play_hosts)) | list)[0]
+    - _manila_is_first_play_host
   tags:
     - manila-config
 
@@ -162,9 +158,7 @@
         type: "{{ manila_service_v2_type }}"
         description: "{{ manila_service_v2_description }}"
   when:
-    - groups['manila_api'] | length > 0
-    - manila_services['manila-api']['group'] in group_names
-    - inventory_hostname == ((groups['manila_api'] | intersect(ansible_play_hosts)) | list)[0]
+    - _manila_is_first_play_host
   tags:
     - manila-config
 
@@ -181,15 +175,13 @@
 - import_tasks: manila_backends.yml
   when:
     - groups[manila_services['manila-share']['group']] | length > 0
-    - manila_services['manila-api']['group'] in group_names
-    - inventory_hostname == ((groups[manila_services['manila-api']['group']] | intersect(ansible_play_hosts)) | list)[-1]
+    - _manila_is_first_play_host
   tags:
     - manila-config
 
 - import_tasks: manila_backend_cephfs.yml
   when:
     - manila_backend_rbd_inuse
-    - manila_services['manila-share']['group'] in group_names
-    - inventory_hostname == ((groups[manila_services['manila-share']['group']] | intersect(ansible_play_hosts)) | list)[-1]
+    - _manila_share_is_first_play_host
   tags:
     - manila-config
