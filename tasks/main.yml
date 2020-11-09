@@ -121,9 +121,17 @@
   tags:
     - manila-config
 
-- import_tasks: manila_uwsgi.yml
+- name: Import uwsgi role
+  import_role:
+    name: uwsgi
+  vars:
+    uwsgi_services: "{{ uwsgi_manila_services }}"
+    uwsgi_install_method: "source"
+  when:
+    - manila_services['manila-api']['group'] in group_names
   tags:
     - manila-config
+    - uwsgi
 
 - name: import_tasks ceph_client role
   import_role:
