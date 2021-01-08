@@ -13,10 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Set the package install state for distribution and pip packages
+# Set the package install state for distribution packages
 # Options are 'present' and 'latest'
-manila_package_state: "latest"
-manila_pip_package_state: "latest"
+manila_package_state: "{{ package_state | default('latest') }}"
 
 # Set the host which will execute the shade modules
 # for the service setup. The host must already have
@@ -25,7 +24,7 @@ manila_service_setup_host: "{{ openstack_service_setup_host | default('localhost
 manila_service_setup_host_python_interpreter: "{{ openstack_service_setup_host_python_interpreter | default((manila_service_setup_host == 'localhost') | ternary(ansible_playbook_python, ansible_python['executable'])) }}"
 
 # Set installation method.
-manila_install_method: "source"
+manila_install_method: "{{ service_install_method | default('source') }}"
 manila_venv_python_executable: "{{ openstack_venv_python_executable | default('python2') }}"
 
 manila_git_repo: https://opendev.org/openstack/manila
@@ -60,7 +59,7 @@ manila_galera_user: manila
 manila_galera_database: manila
 manila_galera_use_ssl: "{{ galera_use_ssl | default(False) }}"
 manila_galera_ssl_ca_cert: "{{ galera_ssl_ca_cert | default('/etc/ssl/certs/galera-ca.pem') }}"
-manila_galera_port: 3306
+manila_galera_port: "{{ galera_port | default('3306') }}"
 
 ## Oslo Messaging
 
@@ -127,7 +126,7 @@ manila_service_user_domain_id: default
 manila_service_user_name: manila
 manila_service_project_name: service
 manila_service_role_name: admin
-manila_service_region: RegionOne
+manila_service_region: "{{ service_region | default('RegionOne') }}"
 manila_service_description: "Openstack Shared File Systems"
 manila_service_port: 8786
 manila_service_proto: http
@@ -190,6 +189,14 @@ manila_quota_share_networks: 10
 #     lvm_share_volume_group: manila_shares
 #     lvm_share_export_ips: <server-ip>
 
+manila_enabled_share_protocols:
+  - NFS
+  - CEPHFS
+
+manila_default_share_type: "{{ _manila_default_share_type | default('')  }}"
+
+manila_share_name_template: share-%s
+
 # manila_backend_lvm_inuse: True if current host has an lvm backend
 manila_backend_lvm_inuse: "{{ (manila_backends | default('') | to_json).find('lvm') != -1 }}"
 # manila_backend_rbd_inuse: True if the current host has an rbd backend
@@ -202,7 +209,7 @@ manila_backend_rbd_inuse: "{{ (manila_backends | default('')|to_json).find('mani
 #  "share:create": ""
 #  "share:delete": ""
 
-manila_service_in_ldap: false
+manila_service_in_ldap: "{{ service_ldap_backend_enabled | default(False) }}"
 
 # Common pip packages
 manila_pip_packages:
@@ -272,9 +279,6 @@ manila_wsgi_processes_max: 16
 manila_wsgi_processes: "{{ [[ansible_processor_vcpus|default(1), 1] | max * 2, manila_wsgi_processes_max] | min }}"
 manila_wsgi_threads: 1
 manila_wsgi_buffer_size: 65535
-
-manila_default_share_type: nfs
-manila_share_name_template: share-%s
 
 ## Tunable overrides
 manila_policy_overrides: {}
