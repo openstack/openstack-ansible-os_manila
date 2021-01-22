@@ -18,7 +18,7 @@
       - check-requirements
       - publish-openstack-docs-pti
       - openstack-ansible-linters-jobs
-      - release-notes-jobs-python3
+      - build-release-notes-jobs-python3
     check:
       jobs:
         - openstack-ansible-deploy-aio_metal-ubuntu-focal
