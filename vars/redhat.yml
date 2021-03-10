@@ -29,7 +29,7 @@ manila_service_distro_packages:
   - openstack-manila
   - python-manilaclient
   - python2-shade
-  - "{{ ansible_distribution_major_version is version('8', '<') | ternary('systemd-python', 'python3-systemd') }}"
+  - python3-systemd
   - uwsgi
   - uwsgi-python
 
@@ -42,7 +42,7 @@ manila_scheduler_distro_packages: []
 manila_share_distro_packages: []
 
 manila_share_deps_distro_packages:
-  - "qemu-img{% if ansible_distribution_major_version|int <= 7 %}-ev{% endif %}"
+  - qemu-img
   - sqlite
 
 manila_lvm_share_distro_packages:
