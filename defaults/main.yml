@@ -21,7 +21,7 @@ manila_package_state: "{{ package_state | default('latest') }}"
 # for the service setup. The host must already have
 # clouds.yaml properly configured.
 manila_service_setup_host: "{{ openstack_service_setup_host | default('localhost') }}"
-manila_service_setup_host_python_interpreter: "{{ openstack_service_setup_host_python_interpreter | default((manila_service_setup_host == 'localhost') | ternary(ansible_playbook_python, ansible_python['executable'])) }}"
+manila_service_setup_host_python_interpreter: "{{ openstack_service_setup_host_python_interpreter | default((manila_service_setup_host == 'localhost') | ternary(ansible_playbook_python, ansible_facts['python']['executable'])) }}"
 
 # Set installation method.
 manila_install_method: "{{ service_install_method | default('source') }}"
@@ -52,7 +52,7 @@ manila_fatal_deprecations: False
 
 ## Database info
 manila_db_setup_host: "{{ openstack_db_setup_host | default('localhost') }}"
-manila_db_setup_python_interpreter: "{{ openstack_db_setup_python_interpreter | default((manila_db_setup_host == 'localhost') | ternary(ansible_playbook_python, ansible_python['executable'])) }}"
+manila_db_setup_python_interpreter: "{{ openstack_db_setup_python_interpreter | default((manila_db_setup_host == 'localhost') | ternary(ansible_playbook_python, ansible_facts['python']['executable'])) }}"
 manila_galera_address: "{{ galera_address | default('127.0.0.1') }}"
 manila_galera_user: manila
 manila_galera_database: manila
@@ -161,7 +161,7 @@ manila_service_data_program_enabled: false
 
 ## Cap the maximun number of threads / workers when a user value is unspecified.
 manila_osapi_share_workers_max: 16
-manila_osapi_share_workers: "{{ [[(ansible_processor_vcpus//ansible_processor_threads_per_core)|default(1), 1] | max * 2, manila_osapi_share_workers_max] | min }}"
+manila_osapi_share_workers: "{{ [[(ansible_facts['processor_vcpus']//ansible_facts['processor_threads_per_core'])|default(1), 1] | max * 2, manila_osapi_share_workers_max] | min }}"
 
 ## Manila RPC
 manila_rpc_executor_thread_pool_size: 64
@@ -275,7 +275,7 @@ manila_services:
     #condition: "{{ manila_service_data_program_enabled | bool }}"
 # Manila uWSGI settings
 manila_wsgi_processes_max: 16
-manila_wsgi_processes: "{{ [[ansible_processor_vcpus|default(1), 1] | max * 2, manila_wsgi_processes_max] | min }}"
+manila_wsgi_processes: "{{ [[ansible_facts['processor_vcpus']|default(1), 1] | max * 2, manila_wsgi_processes_max] | min }}"
 manila_wsgi_threads: 1
 manila_wsgi_buffer_size: 65535
 
