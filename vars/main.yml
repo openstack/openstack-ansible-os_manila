@@ -63,10 +63,6 @@ manila_core_files:
     dest: "/etc/manila/manila.conf"
     config_overrides: "{{ manila_manila_conf_overrides }}"
     config_type: "ini"
-  - src: "policy.json.j2"
-    dest: "/etc/manila/policy.json-{{ manila_venv_tag }}"
-    config_overrides: "{{ manila_policy_overrides }}"
-    config_type: "json"
 
 manila_rootwrap_files:
   - condition: "{{ manila_install_method == 'source' }}"

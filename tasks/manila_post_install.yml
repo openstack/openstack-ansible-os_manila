@@ -38,6 +38,28 @@
     - Restart manila services
     - Restart uwsgi services
 
+- name: Implement policy.yaml if there are overrides configured
+  config_template:
+    dest: "/etc/manila/policy.yaml"
+    config_overrides: "{{ manila_policy_overrides }}"
+    owner: "root"
+    group: "{{ manila_system_group_name }}"
+    mode: "0640"
+    config_type: "yaml"
+  when:
+    - manila_policy_overrides | length > 0
+  tags:
+    - manila-policy-override
+
+- name: Remove legacy policy.yaml file
+  file:
+    path: "/etc/manila/policy.yaml"
+    state: absent
+  when:
+    - manila_policy_overrides | length == 0
+  tags:
+    - manila-policy-override
+
 - name: Drop sudoers file
   template:
     src: "sudoers.j2"
