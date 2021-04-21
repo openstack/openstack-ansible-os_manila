@@ -182,7 +182,7 @@
 
 - name: Create singular manila_backends variable for all hosts
   set_fact:
-    _manila_backends: "{{ (_manila_backends | default(manila_backends | default({}))) | combine(hostvars[item]['manila_backends'] | default({})) }}"
+    _manila_backends: "{{ (_manila_backends | default(manila_backends)) | combine(hostvars[item]['manila_backends'] | default({})) }}"
   with_items: "{{ groups[manila_services['manila-share']['group']] }}"
   tags:
     - manila-config

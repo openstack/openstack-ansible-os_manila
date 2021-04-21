@@ -191,6 +191,7 @@ manila_quota_share_networks: 10
 #     driver_handles_share_servers: False
 #     lvm_share_volume_group: manila_shares
 #     lvm_share_export_ips: <server-ip>
+manila_backends: {}
 
 manila_enabled_share_protocols:
   - NFS
@@ -201,9 +202,9 @@ manila_default_share_type: "{{ _manila_default_share_type | default('')  }}"
 manila_share_name_template: share-%s
 
 # manila_backend_lvm_inuse: True if current host has an lvm backend
-manila_backend_lvm_inuse: "{{ (manila_backends | default('') | to_json).find('lvm') != -1 }}"
+manila_backend_lvm_inuse: "{{ (manila_backends | to_json).find('lvm') != -1 }}"
 # manila_backend_rbd_inuse: True if the current host has an rbd backend
-manila_backend_rbd_inuse: "{{ (manila_backends | default('')|to_json).find('manila.share.drivers.cephfs') != -1 }}"
+manila_backend_rbd_inuse: "{{ (manila_backends |to_json).find('manila.share.drivers.cephfs') != -1 }}"
 
 ## Policy vars
 # Provide a list of access controls to update the default policy.json with. These changes will be merged

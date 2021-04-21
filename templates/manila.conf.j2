@@ -35,18 +35,16 @@ storage_availability_zone = {{ manila_storage_availability_zone }}
 enabled_share_protocols={{ manila_enabled_share_protocols | join(',') }}
 {% endif %}
 
-{% if manila_backends is defined %}
 enabled_share_backends={% for backend in manila_backends | dictsort %}{{ backend.0 }}{% if not loop.last %},{% endif %}{% endfor %}
 
 # All given backend(s)
 {% for backend_section in manila_backends | dictsort %}
 [{{ backend_section.0 }}]
-{% for key, value in (backend_section.1 | dictsort) if key not in ['extra_share_types', 'shares'] %}
+{%   for key, value in (backend_section.1 | dictsort) if key not in ['extra_share_types', 'shares'] %}
 {{ key }}={{ value }}
-{% endfor %}
+{%   endfor %}
 
 {% endfor %}
-{% endif %}
 
 [database]
 connection = mysql+pymysql://{{ manila_galera_user }}:{{ manila_container_mysql_password }}@{{ manila_galera_address }}/{{ manila_galera_database }}?charset=utf8{% if manila_galera_use_ssl | bool %}&ssl_ca={{ manila_galera_ssl_ca_cert }}{% endif %}
