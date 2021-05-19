@@ -33,7 +33,7 @@
 
 - name: Add in manila devices types
   shell: |
-    . {{ ansible_env.HOME }}/openrc
+    . {{ ansible_facts['env']['HOME'] }}/openrc
     CLI_OPTIONS="--endpoint-type internalURL {{ ((keystone_service_adminuri_insecure | bool) or (manila_service_internaluri_insecure | bool)) | ternary('--insecure','') }}"
     if ! {{ manila_bin }}/manila ${CLI_OPTIONS} type-list | grep -q "{{ item.key }}"; then
       {{ manila_bin }}/manila ${CLI_OPTIONS} type-create "{{ item.key }}" "{{ item.value.driver_handles_share_servers }}"
