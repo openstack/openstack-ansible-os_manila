@@ -20,7 +20,7 @@ api_paste_config = /etc/manila/api-paste.ini
 executor_thread_pool_size = {{ manila_rpc_executor_thread_pool_size }}
 rpc_response_timeout = {{ manila_rpc_response_timeout }}
 
-transport_url = {{ manila_oslomsg_rpc_transport }}://{% for host in manila_oslomsg_rpc_servers.split(',') %}{{ manila_oslomsg_rpc_userid }}:{{ manila_oslomsg_rpc_password }}@{{ host }}:{{ manila_oslomsg_rpc_port }}{% if not loop.last %},{% else %}/{{ manila_oslomsg_rpc_vhost }}{% if manila_oslomsg_rpc_use_ssl | bool %}?ssl=1{% else %}?ssl=0{% endif %}{% endif %}{% endfor %}
+transport_url = {{ manila_oslomsg_rpc_transport }}://{% for host in manila_oslomsg_rpc_servers.split(',') %}{{ manila_oslomsg_rpc_userid }}:{{ manila_oslomsg_rpc_password }}@{{ host }}:{{ manila_oslomsg_rpc_port }}{% if not loop.last %},{% else %}/{{ manila_oslomsg_rpc_vhost }}{% if manila_oslomsg_rpc_use_ssl | bool %}?ssl=1&ssl_version={{ manila_oslomsg_rpc_ssl_version }}&ssl_ca_file={{ manila_oslomsg_rpc_ssl_ca_file }}{% else %}?ssl=0{% endif %}{% endif %}{% endfor %}
 
 ## Quota
 quota_shares = {{ manila_quota_shares }}
@@ -56,7 +56,7 @@ ssl = {{ manila_oslomsg_rpc_use_ssl }}
 
 [oslo_messaging_notifications]
 driver = {{ (manila_ceilometer_enabled | bool) | ternary('messagingv2', 'noop') }}
-transport_url = {{ manila_oslomsg_notify_transport }}://{% for host in manila_oslomsg_notify_servers.split(',') %}{{ manila_oslomsg_notify_userid }}:{{ manila_oslomsg_notify_password }}@{{ host }}:{{ manila_oslomsg_notify_port }}{% if not loop.last %},{% else %}/{{ manila_oslomsg_notify_vhost }}{% if manila_oslomsg_notify_use_ssl | bool %}?ssl=1{% else %}?ssl=0{% endif %}{% endif %}{% endfor %}
+transport_url = {{ manila_oslomsg_notify_transport }}://{% for host in manila_oslomsg_notify_servers.split(',') %}{{ manila_oslomsg_notify_userid }}:{{ manila_oslomsg_notify_password }}@{{ host }}:{{ manila_oslomsg_notify_port }}{% if not loop.last %},{% else %}/{{ manila_oslomsg_notify_vhost }}{% if manila_oslomsg_notify_use_ssl | bool %}?ssl=1&ssl_version={{ manila_oslomsg_notify_ssl_version }}&ssl_ca_file={{ manila_oslomsg_notify_ssl_ca_file }}{% else %}?ssl=0{% endif %}{% endif %}{% endfor %}
 
 [oslo_concurrency]
 lock_path = {{ manila_lock_path }}
