@@ -22,10 +22,11 @@ galaxy_info:
   platforms:
     - name: Debian
       versions:
-        - stretch
+        - buster
     - name: Ubuntu
       versions:
         - bionic
+        - focal
   categories:
     - cloud
     - python
