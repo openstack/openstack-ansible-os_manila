@@ -62,8 +62,8 @@
     systemd_user_name: "{{ manila_system_user_name }}"
     systemd_group_name: "{{ manila_system_group_name }}"
     systemd_tempd_prefix: openstack
-    systemd_slice_name: manila
-    systemd_lock_path: /var/lock/manila
+    systemd_slice_name: "{{ manila_system_slice_name }}"
+    systemd_lock_dir:  "{{ manila_lock_dir }}"
     systemd_CPUAccounting: true
     systemd_BlockIOAccounting: true
     systemd_MemoryAccounting: true

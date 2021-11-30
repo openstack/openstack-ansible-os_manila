@@ -97,6 +97,7 @@ manila_system_group_name: manila
 manila_system_comment: manila system user
 manila_system_shell: /bin/false
 manila_system_home_folder: "/var/lib/{{ manila_system_user_name }}"
+manila_system_slice_name: manila
 
 ## Manually specified manila UID/GID
 # Deployers can specify a UID for the manila user as well as the GID for the
@@ -110,7 +111,7 @@ manila_system_home_folder: "/var/lib/{{ manila_system_user_name }}"
 # manila_system_user_uid = <UID>
 # manila_system_group_gid = <GID>
 
-manila_lock_path: /var/lock/manila
+manila_lock_dir: "{{ openstack_lock_dir | default('/run/lock') }}"
 
 ## Manila Auth
 manila_service_admin_tenant_name: "service"
