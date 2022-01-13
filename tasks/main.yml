@@ -72,7 +72,12 @@
   tags:
     - manila-config
 
-- import_tasks: db_setup.yml
+- include_role:
+    name: openstack.osa.db_setup
+    apply:
+      tags:
+        - common-db
+        - manila-config
   when:
     - _manila_is_first_play_host
   vars:
@@ -86,10 +91,14 @@
           - username: "{{ manila_galera_user }}"
             password: "{{ manila_container_mysql_password }}"
   tags:
-    - common-db
-    - manila-config
+    - always
 
-- import_tasks: mq_setup.yml
+- include_role:
+    name: openstack.osa.mq_setup
+    apply:
+      tags:
+        - common-mq
+        - manila-config
   when:
     - _manila_is_first_play_host
   vars:
@@ -104,8 +113,7 @@
     _oslomsg_notify_vhost: "{{ manila_oslomsg_notify_vhost }}"
     _oslomsg_notify_transport: "{{ manila_oslomsg_notify_transport }}"
   tags:
-    - common-mq
-    - manila-config
+    - always
 
 - import_tasks: manila_pre_install.yml
   tags:
@@ -156,7 +164,12 @@
   tags:
     - ceph
 
-- import_tasks: service_setup.yml
+- include_role:
+    name: openstack.osa.service_setup
+    apply:
+      tags:
+         - common-service
+         - manila-config
   vars:
     _service_adminuri_insecure: "{{ keystone_service_adminuri_insecure }}"
     _service_in_ldap: "{{ manila_service_in_ldap }}"
@@ -179,7 +192,7 @@
   when:
     - _manila_is_first_play_host
   tags:
-    - manila-config
+    - always
 
 - name: Flush handlers
   meta: flush_handlers
