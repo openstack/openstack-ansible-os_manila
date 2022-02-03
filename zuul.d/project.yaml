@@ -20,12 +20,12 @@
       #- openstack-ansible-linters-jobs
       - release-notes-jobs-python3
     check:
-      jobs: []
-        #- openstack-ansible-deploy-aio_metal-ubuntu-bionic
-        #- openstack-ansible-deploy-aio_metal-ubuntu-focal
-        #- openstack-ansible-deploy-aio_lxc-ubuntu-bionic:
-        #    voting: false
+      jobs:
+        - openstack-ansible-deploy-aio_metal-ubuntu-bionic
+        - openstack-ansible-deploy-aio_metal-ubuntu-focal
+        - openstack-ansible-deploy-aio_lxc-ubuntu-bionic:
+            voting: false
     gate:
-      jobs: []
-        #- openstack-ansible-deploy-aio_metal-ubuntu-bionic
-        #- openstack-ansible-deploy-aio_metal-ubuntu-focal
+      jobs:
+        - openstack-ansible-deploy-aio_metal-ubuntu-bionic
+        - openstack-ansible-deploy-aio_metal-ubuntu-focal
