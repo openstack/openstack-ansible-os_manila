@@ -34,7 +34,6 @@
   when: item.condition | default(True)
   with_items: "{{ manila_core_files + manila_rootwrap_files }}"
   notify:
-    - Manage LB
     - Restart manila services
     - Restart uwsgi services
 
