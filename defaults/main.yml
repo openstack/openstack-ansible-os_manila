@@ -133,7 +133,12 @@ manila_service_project_domain_id: default
 manila_service_user_domain_id: default
 manila_service_user_name: manila
 manila_service_project_name: service
-manila_service_role_name: admin
+manila_service_role_names:
+  - admin
+  - service
+manila_service_token_roles:
+  - service
+manila_service_token_roles_required: "{{ openstack_service_token_roles_required | default(True) }}"
 manila_service_region: "{{ service_region | default('RegionOne') }}"
 manila_service_description: "Openstack Shared File Systems"
 manila_service_port: 8786

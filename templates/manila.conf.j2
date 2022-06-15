@@ -80,6 +80,10 @@ username = {{ manila_service_user_name }}
 password = {{ manila_service_password }}
 region_name = {{ keystone_service_region }}
 
+service_token_roles_required = {{ manila_service_token_roles_required | bool }}
+service_token_roles = {{ manila_service_token_roles | join(',') }}
+service_type = {{ manila_service_v2_type }}
+
 memcached_servers = {{ manila_memcached_servers }}
 
 token_cache_time = 300

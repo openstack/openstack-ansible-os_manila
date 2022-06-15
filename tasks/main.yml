@@ -181,7 +181,7 @@
     _service_users:
       - name: "{{ manila_service_user_name }}"
         password: "{{ manila_service_password }}"
-        role: "{{ manila_service_role_name }}"
+        role: "{{ manila_service_role_names }}"
     _service_catalog:
       - name: "{{ manila_service_name }}"
         type: "{{ manila_service_type }}"
