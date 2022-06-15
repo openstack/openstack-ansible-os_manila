@@ -223,7 +223,6 @@ manila_service_in_ldap: "{{ service_ldap_backend_enabled | default(False) }}"
 # Common pip packages
 manila_pip_packages:
   - "git+{{ manila_git_repo }}@{{ manila_git_install_branch }}#egg=manila"
-  - python-manilaclient
   - cryptography
   - ecdsa
   - httplib2
@@ -231,7 +230,6 @@ manila_pip_packages:
   - osprofiler
   - PyMySQL
   - pymemcache
-  - python-openstackclient
   - python-memcached
   - systemd-python
 

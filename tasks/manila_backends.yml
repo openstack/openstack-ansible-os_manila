@@ -13,33 +13,30 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Ensure manila api is available
-  uri:
-    url: "{{ manila_service_internaluri }}"
-    status_code: 200,300
-    validate_certs: "{{ manila_service_internaluri_insecure | bool }}"
-  register: api_status
-  until: api_status  is success
-  retries: 10
-  delay: 10
+- name: Create share types from setup_host
+  delegate_to: "{{ manila_service_setup_host }}"
+  vars:
+    ansible_python_interpreter: "{{ manila_service_setup_host_python_interpreter }}"
+  block:
 
-# TODO(odyssey4me):
-# Once these tasks can be replaced by using Ansible modules instead,
-# we should do that and use the delegation to the service setup host
-# so that we can remove the openrc file from the target host.
-- name: Implement openrc/clouds.yaml
-  include_role:
-    name: "openstack_openrc"
+    - name: Ensure manila api is available
+      uri:
+        url: "{{ manila_service_internaluri }}"
+        status_code: 200,300
+        validate_certs: "{{ manila_service_internaluri_insecure | bool }}"
+      register: api_status
+      until: api_status  is success
+      retries: 10
+      delay: 10
 
-- name: Add in manila devices types
-  shell: |
-    . {{ ansible_facts['env']['HOME'] }}/openrc
-    CLI_OPTIONS="--endpoint-type internalURL {{ ((keystone_service_adminuri_insecure | bool) or (manila_service_internaluri_insecure | bool)) | ternary('--insecure','') }}"
-    if ! {{ manila_bin }}/manila ${CLI_OPTIONS} type-list | grep -q "{{ item.key }}"; then
-      {{ manila_bin }}/manila ${CLI_OPTIONS} type-create "{{ item.key }}" "{{ item.value.driver_handles_share_servers }}"
-      {{ manila_bin }}/manila ${CLI_OPTIONS} type-key "{{ item.key }}" set "share_backend_name={{ item.value.share_backend_name }}"
-    fi
-  args:
-    executable: /bin/bash
-  with_dict: "{{ _manila_backends | default({}) }}"
-  changed_when: false
+    - name: Add in manila devices types
+      shell: |
+        . {{ ansible_facts['env']['HOME'] }}/openrc
+        CLI_OPTIONS="--os-interface internal {{ ((keystone_service_adminuri_insecure | bool) or (manila_service_internaluri_insecure | bool)) | ternary('--insecure','') }}"
+        if ! openstack ${CLI_OPTIONS} share type list | grep -q "{{ item.key }}"; then
+          openstack ${CLI_OPTIONS} share type create "{{ item.key }}" "{{ item.value.driver_handles_share_servers }}" --extra-specs "share_backend_name={{ item.value.share_backend_name }}"
+        fi
+      args:
+        executable: /bin/bash
+      with_dict: "{{ _manila_backends | default({}) }}"
+      changed_when: false
