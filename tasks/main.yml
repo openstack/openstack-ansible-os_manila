@@ -207,6 +207,6 @@
 - import_tasks: manila_backends.yml
   when:
     - groups[manila_services['manila-share']['group']] | length > 0
-    - _manila_is_first_play_host
+    - _manila_share_is_first_play_host
   tags:
     - manila-config
