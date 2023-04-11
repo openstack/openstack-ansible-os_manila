@@ -299,12 +299,6 @@ manila_api_paste_ini_overrides: {}
 manila_manila_conf_overrides: {}
 manila_api_uwsgi_ini_overrides: {}
 
-## Set default manila path in service units. The default override sets the
-## execution path for the manila service.
-manila_environment_overrides:
-  Service:
-    Environment: "PATH={{ manila_bin }}:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-
 # Manila keypair
 #
 # The following path ontains the keypair which will be used for SSH.  It requires that
