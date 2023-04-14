@@ -284,6 +284,7 @@ manila_services:
     uwsgi_overrides: "{{ manila_api_uwsgi_ini_overrides }}"
     uwsgi_port: "{{ manila_service_port }}"
     uwsgi_bind_address: "{{ manila_uwsgi_bind_address }}"
+    uwsgi_tls: "{{ manila_backend_ssl | ternary(manila_uwsgi_tls, {}) }}"
 
     #condition: "{{ manila_service_data_program_enabled | bool }}"
 # Manila uWSGI settings
@@ -291,6 +292,9 @@ manila_wsgi_processes_max: 16
 manila_wsgi_processes: "{{ [[ansible_facts['processor_vcpus']|default(1), 1] | max * 2, manila_wsgi_processes_max] | min }}"
 manila_wsgi_threads: 1
 manila_wsgi_buffer_size: 65535
+manila_uwsgi_tls:
+  crt: "{{ manila_ssl_cert }}"
+  key: "{{ manila_ssl_key }}"
 
 ## Tunable overrides
 manila_policy_overrides: {}
@@ -306,3 +310,51 @@ manila_api_uwsgi_ini_overrides: {}
 # is set and a key cannot be found it will generate one.
 #
 # manila_keypair_path: /etc/openstack_deploy/id_rsa
+
+###
+### Backend TLS
+###
+
+# Define if communication between haproxy and service backends should be
+# encrypted with TLS.
+manila_backend_ssl: "{{ openstack_service_backend_ssl | default(False) }}"
+
+# Storage location for SSL certificate authority
+manila_pki_dir: "{{ openstack_pki_dir | default('/etc/openstack_deploy/pki') }}"
+
+# Delegated host for operating the certificate authority
+manila_pki_setup_host: "{{ openstack_pki_setup_host | default('localhost') }}"
+
+# manila server certificate
+manila_pki_keys_path: "{{ manila_pki_dir ~ '/certs/private/' }}"
+manila_pki_certs_path: "{{ manila_pki_dir ~ '/certs/certs/' }}"
+manila_pki_intermediate_cert_name: "{{ openstack_pki_service_intermediate_cert_name | default('ExampleCorpIntermediate') }}"
+manila_pki_regen_cert: ''
+manila_pki_san: "{{ openstack_pki_san | default('DNS:' ~ ansible_facts['hostname'] ~ ',IP:' ~ management_address) }}"
+manila_pki_certificates:
+  - name: "manila_{{ ansible_facts['hostname'] }}"
+    provider: ownca
+    cn: "{{ ansible_facts['hostname'] }}"
+    san: "{{ manila_pki_san }}"
+    signed_by: "{{ manila_pki_intermediate_cert_name }}"
+
+# manila destination files for SSL certificates
+manila_ssl_cert: /etc/manila/manila.pem
+manila_ssl_key: /etc/manila/manila.key
+
+# Installation details for SSL certificates
+manila_pki_install_certificates:
+  - src: "{{ manila_user_ssl_cert | default(manila_pki_certs_path ~ 'manila_' ~ ansible_facts['hostname'] ~ '-chain.crt') }}"
+    dest: "{{ manila_ssl_cert }}"
+    owner: "{{ manila_system_user_name }}"
+    group: "{{ manila_system_user_name }}"
+    mode: "0644"
+  - src: "{{ manila_user_ssl_key | default(manila_pki_keys_path ~ 'manila_' ~ ansible_facts['hostname'] ~ '.key.pem') }}"
+    dest: "{{ manila_ssl_key }}"
+    owner: "{{ manila_system_user_name }}"
+    group: "{{ manila_system_user_name }}"
+    mode: "0600"
+
+# Define user-provided SSL certificates
+#manila_user_ssl_cert: <path to cert on ansible deployment host>
+#manila_user_ssl_key: <path to cert on ansible deployment host>
