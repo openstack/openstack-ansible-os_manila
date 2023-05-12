@@ -29,7 +29,6 @@ manila_distro_packages:
   - rpcbind
   - rsync
   - zlib1g
-  - zlibc
 
 manila_service_distro_packages:
   - python-manilaclient
