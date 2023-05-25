@@ -21,12 +21,12 @@
       - build-release-notes-jobs-python3
     check:
       jobs:
-        - openstack-ansible-deploy-aio_metal-ubuntu-focal
+        - openstack-ansible-deploy-aio_metal-ubuntu-jammy
         # NOTE(noonedeadpunk): Fails with OOM
         - openstack-ansible-deploy-aio_metal-centos-8-stream:
             voting: false
-        - openstack-ansible-deploy-aio_lxc-ubuntu-focal:
+        - openstack-ansible-deploy-aio_lxc-ubuntu-jammy:
             voting: false
     gate:
       jobs:
-        - openstack-ansible-deploy-aio_metal-ubuntu-focal
+        - openstack-ansible-deploy-aio_metal-ubuntu-jammy
