@@ -24,6 +24,7 @@
   file:
     state: "directory"
     path: "/etc/lvm"
+    mode: "0755"
   when:
     - lvm_devices.rc == 0
 
@@ -34,5 +35,6 @@
     owner: "root"
     group: "root"
     backup: "yes"
+    mode: "0644"
   when:
     - lvm_devices.rc == 0

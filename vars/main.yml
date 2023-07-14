@@ -13,8 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-_manila_is_first_play_host: "{{ (manila_services['manila-api']['group'] in group_names and inventory_hostname == (groups[manila_services['manila-api']['group']] | intersect(ansible_play_hosts)) | first) | bool }}"
-_manila_share_is_first_play_host: "{{ (manila_services['manila-share']['group'] in group_names and inventory_hostname == (groups[manila_services['manila-share']['group']] | intersect(ansible_play_hosts)) | first) | bool }}"
+_manila_is_first_play_host: >-
+  {{
+    (manila_services['manila-api']['group'] in group_names and
+      inventory_hostname == (groups[manila_services['manila-api']['group']] | intersect(ansible_play_hosts)) | first) | bool
+  }}
+_manila_share_is_first_play_host: >-
+  {{
+    (manila_services['manila-share']['group'] in group_names and
+      inventory_hostname == (groups[manila_services['manila-share']['group']] | intersect(ansible_play_hosts)) | first) | bool
+  }}
 
 _manila_default_share_type_list: "{{ manila_backends.keys() | list }}"
 _manila_default_share_type: "{{ ((_manila_default_share_type_list | length) > 0) | ternary(_manila_default_share_type_list[0], '') }}"

@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: create the system group
+- name: Create the system group
   group:
     name: "{{ manila_system_group_name }}"
     gid: "{{ manila_system_group_gid | default(omit) }}"
@@ -23,7 +23,7 @@
 - name: Create the manila system user
   user:
     name: "{{ manila_system_user_name }}"
-    uid: "{{ manila_system_user_uid|default(omit) }}"
+    uid: "{{ manila_system_user_uid | default(omit) }}"
     group: "{{ manila_system_group_name }}"
     comment: "{{ manila_system_comment }}"
     shell: "{{ manila_system_shell }}"

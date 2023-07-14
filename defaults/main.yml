@@ -21,7 +21,11 @@ manila_package_state: "{{ package_state | default('latest') }}"
 # for the service setup. The host must already have
 # clouds.yaml properly configured.
 manila_service_setup_host: "{{ openstack_service_setup_host | default('localhost') }}"
-manila_service_setup_host_python_interpreter: "{{ openstack_service_setup_host_python_interpreter | default((manila_service_setup_host == 'localhost') | ternary(ansible_playbook_python, ansible_facts['python']['executable'])) }}"
+manila_service_setup_host_python_interpreter: >-
+  {{
+    openstack_service_setup_host_python_interpreter | default(
+      (manila_service_setup_host == 'localhost') | ternary(ansible_playbook_python, ansible_facts['python']['executable']))
+  }}
 
 # Set installation method.
 manila_install_method: "{{ service_install_method | default('source') }}"
@@ -29,7 +33,8 @@ manila_venv_python_executable: "{{ openstack_venv_python_executable | default('p
 
 manila_git_repo: https://opendev.org/openstack/manila
 manila_git_install_branch: master
-manila_upper_constraints_url: "{{ requirements_git_url | default('https://releases.openstack.org/constraints/upper/' ~ requirements_git_install_branch | default('master')) }}"
+manila_upper_constraints_url: >-
+  {{ requirements_git_url | default('https://releases.openstack.org/constraints/upper/' ~ requirements_git_install_branch | default('master')) }}
 manila_git_constraints:
   - "--constraint {{ manila_upper_constraints_url }}"
 
@@ -52,7 +57,11 @@ manila_fatal_deprecations: False
 
 ## Database info
 manila_db_setup_host: "{{ openstack_db_setup_host | default('localhost') }}"
-manila_db_setup_python_interpreter: "{{ openstack_db_setup_python_interpreter | default((manila_db_setup_host == 'localhost') | ternary(ansible_playbook_python, ansible_facts['python']['executable'])) }}"
+manila_db_setup_python_interpreter: >-
+  {{
+    openstack_db_setup_python_interpreter | default(
+      (manila_db_setup_host == 'localhost') | ternary(ansible_playbook_python, ansible_facts['python']['executable']))
+  }}
 manila_galera_address: "{{ galera_address | default('127.0.0.1') }}"
 manila_galera_user: manila
 manila_galera_database: manila
@@ -175,7 +184,8 @@ manila_service_data_program_enabled: false
 
 ## Cap the maximun number of threads / workers when a user value is unspecified.
 manila_osapi_share_workers_max: 16
-manila_osapi_share_workers: "{{ [[(ansible_facts['processor_vcpus']//ansible_facts['processor_threads_per_core'])|default(1), 1] | max * 2, manila_osapi_share_workers_max] | min }}"
+manila_osapi_share_workers: >-
+  {{ [[(ansible_facts['processor_vcpus'] // ansible_facts['processor_threads_per_core']) | default(1), 1] | max * 2, manila_osapi_share_workers_max] | min }}
 
 ## Manila RPC
 manila_rpc_executor_thread_pool_size: 64
@@ -207,21 +217,21 @@ manila_enabled_share_protocols:
   - NFS
   - CEPHFS
 
-manila_default_share_type: "{{ _manila_default_share_type | default('')  }}"
+manila_default_share_type: "{{ _manila_default_share_type | default('') }}"
 
 manila_share_name_template: share-%s
 
 # manila_backend_lvm_inuse: True if current host has an lvm backend
 manila_backend_lvm_inuse: "{{ (manila_backends | to_json).find('lvm') != -1 }}"
 # manila_backend_rbd_inuse: True if the current host has an rbd backend
-manila_backend_rbd_inuse: "{{ (manila_backends |to_json).find('manila.share.drivers.cephfs') != -1 }}"
+manila_backend_rbd_inuse: "{{ (manila_backends | to_json).find('manila.share.drivers.cephfs') != -1 }}"
 
 ## Policy vars
 # Provide a list of access controls to update the default policy.json with. These changes will be merged
 # with the access controls in the default policy.json. E.g.
-#manila_policy_overrides:
-#  "share:create": ""
-#  "share:delete": ""
+# manila_policy_overrides:
+#   "share:create": ""
+#   "share:delete": ""
 
 manila_service_in_ldap: "{{ service_ldap_backend_enabled | default(False) }}"
 
@@ -286,10 +296,9 @@ manila_services:
     uwsgi_bind_address: "{{ manila_uwsgi_bind_address }}"
     uwsgi_tls: "{{ manila_backend_ssl | ternary(manila_uwsgi_tls, {}) }}"
 
-    #condition: "{{ manila_service_data_program_enabled | bool }}"
 # Manila uWSGI settings
 manila_wsgi_processes_max: 16
-manila_wsgi_processes: "{{ [[ansible_facts['processor_vcpus']|default(1), 1] | max * 2, manila_wsgi_processes_max] | min }}"
+manila_wsgi_processes: "{{ [[ansible_facts['processor_vcpus'] | default(1), 1] | max * 2, manila_wsgi_processes_max] | min }}"
 manila_wsgi_threads: 1
 manila_wsgi_buffer_size: 65535
 manila_uwsgi_tls:
@@ -356,5 +365,5 @@ manila_pki_install_certificates:
     mode: "0600"
 
 # Define user-provided SSL certificates
-#manila_user_ssl_cert: <path to cert on ansible deployment host>
-#manila_user_ssl_key: <path to cert on ansible deployment host>
+# manila_user_ssl_cert: <path to cert on ansible deployment host>
+# manila_user_ssl_key: <path to cert on ansible deployment host>

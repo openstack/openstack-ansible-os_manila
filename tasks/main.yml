@@ -65,14 +65,16 @@
   tags:
     - always
 
-- import_tasks: manila_lvm_config.yml
+- name: Importing manila_lvm_config tasks
+  import_tasks: manila_lvm_config.yml
   when:
     - manila_services['manila-share']['group'] in group_names
     - manila_backend_lvm_inuse | bool
   tags:
     - manila-config
 
-- include_role:
+- name: Including osa.db_setup role
+  include_role:
     name: openstack.osa.db_setup
     apply:
       tags:
@@ -93,7 +95,8 @@
   tags:
     - always
 
-- include_role:
+- name: Including osa.mq_setup role
+  include_role:
     name: openstack.osa.mq_setup
     apply:
       tags:
@@ -115,11 +118,13 @@
   tags:
     - always
 
-- import_tasks: manila_pre_install.yml
+- name: Importing manila_pre_install tasks
+  import_tasks: manila_pre_install.yml
   tags:
     - manila-install
 
-- import_tasks: manila_install.yml
+- name: Importing manila_install tasks
+  import_tasks: manila_install.yml
   tags:
     - manila-install
 
@@ -143,18 +148,21 @@
   tags:
     - always
 
-- import_tasks: manila_post_install.yml
+- name: Importing manila_post_install tasks
+  import_tasks: manila_post_install.yml
   tags:
     - manila-config
 
-- import_tasks: manila_keys.yml
+- name: Importing manila_keys tasks
+  import_tasks: manila_keys.yml
   when:
     - manila_keypair_path is defined
     - manila_services['manila-share']['group'] in group_names
   tags:
     - manila-config
 
-- include_tasks: manila_db_sync.yml
+- name: Including manila_db_sync tasks
+  include_tasks: manila_db_sync.yml
   when:
     - _manila_is_first_play_host
   tags:
@@ -172,7 +180,7 @@
     - manila-config
     - uwsgi
 
-- name: import_tasks ceph_client role
+- name: Importing ceph_client role
   import_role:
     name: ceph_client
   vars:
@@ -184,12 +192,13 @@
   tags:
     - ceph
 
-- include_role:
+- name: Including osa.service_setup role
+  include_role:
     name: openstack.osa.service_setup
     apply:
       tags:
-         - common-service
-         - manila-config
+        - common-service
+        - manila-config
   vars:
     _service_adminuri_insecure: "{{ keystone_service_adminuri_insecure }}"
     _service_in_ldap: "{{ manila_service_in_ldap }}"
@@ -224,7 +233,8 @@
   tags:
     - manila-config
 
-- import_tasks: manila_backends.yml
+- name: Importing manila_backends tasks
+  import_tasks: manila_backends.yml
   when:
     - groups[manila_services['manila-share']['group']] | length > 0
     - _manila_share_is_first_play_host

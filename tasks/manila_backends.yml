@@ -32,9 +32,12 @@
     - name: Add in manila devices types
       shell: |
         . {{ ansible_facts['env']['HOME'] }}/openrc
-        CLI_OPTIONS="--os-interface internal {{ ((keystone_service_adminuri_insecure | bool) or (manila_service_internaluri_insecure | bool)) | ternary('--insecure','') }}"
+        CLI_OPTIONS="--os-interface internal {{ ((keystone_service_adminuri_insecure | bool) or (manila_service_internaluri_insecure | bool)) | ternary(
+          '--insecure', '')
+        }}"
         if ! openstack ${CLI_OPTIONS} share type list | grep -q "{{ item.key }}"; then
-          openstack ${CLI_OPTIONS} share type create "{{ item.key }}" "{{ item.value.driver_handles_share_servers }}" --extra-specs "share_backend_name={{ item.value.share_backend_name }}"
+          openstack ${CLI_OPTIONS} share type create "{{ item.key }}" "{{ item.value.driver_handles_share_servers }}" \
+            --extra-specs "share_backend_name={{ item.value.share_backend_name }}"
         fi
       args:
         executable: /bin/bash
