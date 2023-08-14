@@ -11,7 +11,7 @@
     dest: "/etc/manila/{{ item | basename }}"
     owner: "{{ manila_system_user_name }}"
     group: "{{ manila_system_group_name }}"
-    mode: 0600
+    mode: "0600"
   loop:
     - "{{ manila_keypair_path }}.pub"
     - "{{ manila_keypair_path }}"

@@ -27,8 +27,8 @@
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
     owner: "root"
-    group: "{{ item.group|default(manila_system_group_name) }}"
-    mode: "{{ item.mode |default('0640') }}"
+    group: "{{ item.group | default(manila_system_group_name) }}"
+    mode: "{{ item.mode | default('0640') }}"
     config_overrides: "{{ item.config_overrides | default({}) }}"
     config_type: "{{ item.config_type }}"
   when: item.condition | default(True)

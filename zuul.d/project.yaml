@@ -23,7 +23,7 @@
       jobs:
         - openstack-ansible-deploy-aio_metal-ubuntu-jammy
         # NOTE(noonedeadpunk): Fails with OOM
-        - openstack-ansible-deploy-aio_metal-centos-8-stream:
+        - openstack-ansible-deploy-aio_metal-centos-9-stream:
             voting: false
         - openstack-ansible-deploy-aio_lxc-ubuntu-jammy:
             voting: false
