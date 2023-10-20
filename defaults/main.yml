@@ -83,7 +83,13 @@ manila_oslomsg_rpc_servers: "{{ oslomsg_rpc_servers | default('127.0.0.1') }}"
 manila_oslomsg_rpc_port: "{{ oslomsg_rpc_port | default('5672') }}"
 manila_oslomsg_rpc_use_ssl: "{{ oslomsg_rpc_use_ssl | default(False) }}"
 manila_oslomsg_rpc_userid: manila
-manila_oslomsg_rpc_vhost: /manila
+# vhost name depends on value of oslomsg_rabbit_quorum_queues. In case quorum queues
+# are not used - vhost name will be prefixed with leading `/`.
+manila_oslomsg_rpc_vhost:
+  - name: /manila
+    state: "{{ manila_oslomsg_rabbit_quorum_queues | ternary('absent', 'present') }}"
+  - name: manila
+    state: "{{ manila_oslomsg_rabbit_quorum_queues | ternary('present', 'absent') }}"
 manila_oslomsg_rpc_ssl_version: "{{ oslomsg_rpc_ssl_version | default('TLSv1_2') }}"
 manila_oslomsg_rpc_ssl_ca_file: "{{ oslomsg_rpc_ssl_ca_file | default('') }}"
 
@@ -99,6 +105,11 @@ manila_oslomsg_notify_password: "{{ manila_oslomsg_rpc_password }}"
 manila_oslomsg_notify_vhost: "{{ manila_oslomsg_rpc_vhost }}"
 manila_oslomsg_notify_ssl_version: "{{ oslomsg_notify_ssl_version | default('TLSv1_2') }}"
 manila_oslomsg_notify_ssl_ca_file: "{{ oslomsg_notify_ssl_ca_file | default('') }}"
+
+## RabbitMQ integration
+manila_oslomsg_rabbit_quorum_queues: "{{ oslomsg_rabbit_quorum_queues | default(True) }}"
+manila_oslomsg_rabbit_quorum_delivery_limit: "{{ oslomsg_rabbit_quorum_delivery_limit | default(0) }}"
+manila_oslomsg_rabbit_quorum_max_memory_bytes: "{{ oslomsg_rabbit_quorum_max_memory_bytes | default(0) }}"
 
 ## (Qdrouterd) integration
 # TODO(evrardjp): Change structure when more backends will be supported
