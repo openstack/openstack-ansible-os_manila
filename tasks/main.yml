@@ -117,6 +117,7 @@
     _oslomsg_notify_vhost: "{{ manila_oslomsg_notify_vhost }}"
     _oslomsg_notify_transport: "{{ manila_oslomsg_notify_transport }}"
     _oslomsg_notify_policies: "{{ manila_oslomsg_notify_policies }}"
+    _oslomsg_notify_configure: "{{ manila_oslomsg_notify_configure }}"
   tags:
     - always
 

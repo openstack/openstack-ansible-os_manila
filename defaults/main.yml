@@ -45,7 +45,7 @@ manila_venv_tag: "{{ venv_tag | default('untagged') }}"
 manila_bin: "{{ _manila_bin }}"
 
 # Enable/Disable Ceilometer
-manila_ceilometer_enabled: False
+manila_ceilometer_enabled: "{{ (groups['ceilometer_all'] is defined) and (groups['ceilometer_all'] | length > 0) }}"
 
 manila_storage_availability_zone: nova
 manila_default_availability_zone: "{{ manila_storage_availability_zone }}"
@@ -95,6 +95,7 @@ manila_oslomsg_rpc_ssl_ca_file: "{{ oslomsg_rpc_ssl_ca_file | default('') }}"
 manila_oslomsg_rpc_policies: []
 
 # Notify
+manila_oslomsg_notify_configure: "{{ oslomsg_notify_configure | default(manila_ceilometer_enabled) }}"
 manila_oslomsg_notify_host_group: "{{ oslomsg_notify_host_group | default('rabbitmq_all') }}"
 manila_oslomsg_notify_setup_host: "{{ (manila_oslomsg_notify_host_group in groups) | ternary(groups[manila_oslomsg_notify_host_group][0], 'localhost') }}"
 manila_oslomsg_notify_transport: "{{ oslomsg_notify_transport | default('rabbit') }}"
