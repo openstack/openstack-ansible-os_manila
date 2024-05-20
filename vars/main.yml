@@ -24,6 +24,17 @@ _manila_share_is_first_play_host: >-
       inventory_hostname == (groups[manila_services['manila-share']['group']] | intersect(ansible_play_hosts)) | first) | bool
   }}
 
+_manila_oslomsg_rpc_vhost_conf: >-
+  {{
+    (manila_oslomsg_rpc_vhost is string) | ternary(
+      manila_oslomsg_rpc_vhost, manila_oslomsg_rpc_vhost | selectattr('state', 'eq', 'present') | map(attribute='name') | first)
+  }}
+_manila_oslomsg_notify_vhost_conf: >-
+  {{
+    (manila_oslomsg_notify_vhost is string) | ternary(
+      manila_oslomsg_notify_vhost, manila_oslomsg_notify_vhost | selectattr('state', 'eq', 'present') | map(attribute='name') | first)
+  }}
+
 _manila_default_share_type_list: "{{ manila_backends.keys() | list }}"
 _manila_default_share_type: "{{ ((_manila_default_share_type_list | length) > 0) | ternary(_manila_default_share_type_list[0], '') }}"
 
