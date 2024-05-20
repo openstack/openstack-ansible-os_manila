@@ -155,6 +155,7 @@
   import_tasks: manila_post_install.yml
   tags:
     - manila-config
+    - post-install
 
 - name: Importing manila_keys tasks
   import_tasks: manila_keys.yml
