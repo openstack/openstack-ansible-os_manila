@@ -56,6 +56,10 @@ connection_recycle_time = {{ manila_db_connection_recycle_time }}
 [oslo_messaging_rabbit]
 ssl = {{ manila_oslomsg_rpc_use_ssl }}
 rabbit_quorum_queue = {{ manila_oslomsg_rabbit_quorum_queues }}
+rabbit_transient_quorum_queue = {{ manila_oslomsg_rabbit_transient_quorum_queues }}
+rabbit_qos_prefetch_count = {{ manila_oslomsg_rabbit_qos_prefetch_count }}
+use_queue_manager = {{ manila_oslomsg_rabbit_queue_manager }}
+rabbit_stream_fanout = {{ manila_oslomsg_rabbit_stream_fanout }}
 rabbit_quorum_delivery_limit = {{ manila_oslomsg_rabbit_quorum_delivery_limit }}
 rabbit_quorum_max_memory_bytes = {{ manila_oslomsg_rabbit_quorum_max_memory_bytes }}
 
