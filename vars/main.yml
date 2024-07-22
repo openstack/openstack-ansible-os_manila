@@ -16,12 +16,12 @@
 _manila_is_first_play_host: >-
   {{
     (manila_services['manila-api']['group'] in group_names and
-      inventory_hostname == (groups[manila_services['manila-api']['group']] | intersect(ansible_play_hosts)) | first) | bool
+      inventory_hostname == (groups[manila_services['manila-api']['group']] | select('in', ansible_play_hosts)) | first) | bool
   }}
 _manila_share_is_first_play_host: >-
   {{
     (manila_services['manila-share']['group'] in group_names and
-      inventory_hostname == (groups[manila_services['manila-share']['group']] | intersect(ansible_play_hosts)) | first) | bool
+      inventory_hostname == (groups[manila_services['manila-share']['group']] | select('in', ansible_play_hosts)) | first) | bool
   }}
 
 _manila_oslomsg_rpc_vhost_conf: >-
