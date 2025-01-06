@@ -52,9 +52,4 @@ manila_lvm_share_distro_packages:
 
 manila_rbd_share_distro_packages: []
 
-manila_oslomsg_amqp1_distro_packages:
-  - cyrus-sasl-lib
-  - cyrus-sasl-plain
-  - cyrus-sasl-md5
-
 manila_uwsgi_bin: "/usr/sbin"

@@ -46,10 +46,7 @@
     venv_build_distro_package_list: "{{ manila_devel_distro_packages }}"
     venv_install_destination_path: "{{ manila_bin | dirname }}"
     venv_pip_install_args: "{{ manila_pip_install_args }}"
-    venv_pip_packages: >-
-      {{ manila_pip_packages |
-           union(manila_user_pip_packages) |
-             union(((manila_oslomsg_amqp1_enabled | bool) | ternary(manila_optional_oslomsg_amqp1_pip_packages, []))) }}
+    venv_pip_packages: "{{ manila_pip_packages | union(manila_user_pip_packages) }}"
     venv_facts_when_changed:
       - section: "manila"
         option: "venv_tag"

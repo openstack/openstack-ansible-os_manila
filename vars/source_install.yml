@@ -29,9 +29,6 @@ manila_package_list: |-
   {%     set _ = packages.extend(manila_rbd_share_distro_packages) %}
   {%   endif %}
   {% endif %}
-  {% if manila_oslomsg_amqp1_enabled | bool %}
-  {%   set _ = packages.extend(manila_oslomsg_amqp1_distro_packages) %}
-  {% endif %}
   {{ packages }}
 
 _manila_bin: "/openstack/venvs/manila-{{ manila_venv_tag }}/bin"
