@@ -70,4 +70,4 @@ manila_oslomsg_amqp1_distro_packages:
   - libsasl2-modules
   - sasl2-bin
 
-manila_uwsgi_bin: '/usr/bin'
+manila_uwsgi_bin: "/usr/bin"

@@ -14,14 +14,14 @@
 # limitations under the License.
 
 - name: Perform a manila DB sync
-  command: "{{ manila_bin }}/manila-manage db sync"
-  become: yes
+  ansible.builtin.command: "{{ manila_bin }}/manila-manage db sync"
+  become: true
   become_user: "{{ manila_system_user_name }}"
   changed_when: false
 
 - name: Perform online data migrations
-  command: "{{ manila_bin }}/manila-manage db online_data_migrations"
-  become: yes
+  ansible.builtin.command: "{{ manila_bin }}/manila-manage db online_data_migrations"
+  become: true
   become_user: "{{ manila_system_user_name }}"
   when:
     - (manila_all_software_updated | default(false)) | bool
@@ -30,7 +30,7 @@
   register: data_migrations
 
 - name: Disable the online migrations requirement
-  ini_file:
+  community.general.ini_file:
     dest: "/etc/ansible/facts.d/openstack_ansible.fact"
     section: manila
     option: need_online_data_migrations

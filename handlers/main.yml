@@ -14,11 +14,11 @@
 # limitations under the License.
 
 - name: Stop services
-  service:
+  ansible.builtin.service:
     name: "{{ item.service_name }}"
-    enabled: yes
+    enabled: true
     state: stopped
-    daemon_reload: yes
+    daemon_reload: true
   with_items: "{{ filtered_manila_services }}"
   register: _stop
   until: _stop  is success
@@ -31,11 +31,11 @@
     - "cert installed"
 
 - name: Start services
-  service:
+  ansible.builtin.service:
     name: "{{ item.service_name }}"
-    enabled: yes
+    enabled: true
     state: "started"
-    daemon_reload: yes
+    daemon_reload: true
   with_items: "{{ filtered_manila_services }}"
   register: _start
   until: _start  is success

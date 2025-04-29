@@ -14,10 +14,10 @@
 # limitations under the License.
 
 - name: Fetch rootwrap files
-  fetch:
+  ansible.builtin.fetch:
     src: "{{ item.source }}"
     dest: "{{ item.src }}"
-    flat: yes
+    flat: true
   changed_when: false
   with_items: "{{ manila_rootwrap_files }}"
   run_once: true
@@ -51,7 +51,7 @@
     - manila-policy-override
 
 - name: Remove legacy policy.yaml file
-  file:
+  ansible.builtin.file:
     path: "/etc/manila/policy.yaml"
     state: absent
   when:
@@ -60,7 +60,7 @@
     - manila-policy-override
 
 - name: Drop sudoers file
-  template:
+  ansible.builtin.template:
     src: "sudoers.j2"
     dest: "/etc/sudoers.d/{{ manila_system_user_name }}_sudoers"
     mode: "0440"

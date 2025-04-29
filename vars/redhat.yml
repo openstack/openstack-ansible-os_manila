@@ -57,4 +57,4 @@ manila_oslomsg_amqp1_distro_packages:
   - cyrus-sasl-plain
   - cyrus-sasl-md5
 
-manila_uwsgi_bin: '/usr/sbin'
+manila_uwsgi_bin: "/usr/sbin"

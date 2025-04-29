@@ -53,7 +53,7 @@ manila_default_availability_zone: "{{ manila_storage_availability_zone }}"
 manila_management_address: 127.0.0.1
 manila_uwsgi_bind_address: "{{ openstack_service_bind_address | default('0.0.0.0') }}"
 
-manila_fatal_deprecations: False
+manila_fatal_deprecations: false
 
 ## Database info
 manila_db_setup_host: "{{ openstack_db_setup_host | default('localhost') }}"
@@ -307,7 +307,7 @@ manila_services:
     service_name: manila-api
     init_config_overrides: "{{ manila_api_init_overrides }}"
     start_order: 4
-    wsgi_app: True
+    wsgi_app: true
     wsgi_name: manila-wsgi
     uwsgi_overrides: "{{ manila_api_uwsgi_ini_overrides }}"
     uwsgi_port: "{{ manila_service_port }}"
@@ -356,7 +356,7 @@ manila_pki_setup_host: "{{ openstack_pki_setup_host | default('localhost') }}"
 manila_pki_keys_path: "{{ manila_pki_dir ~ '/certs/private/' }}"
 manila_pki_certs_path: "{{ manila_pki_dir ~ '/certs/certs/' }}"
 manila_pki_intermediate_cert_name: "{{ openstack_pki_service_intermediate_cert_name | default('ExampleCorpIntermediate') }}"
-manila_pki_regen_cert: ''
+manila_pki_regen_cert: ""
 manila_pki_san: "{{ openstack_pki_san | default('DNS:' ~ ansible_facts['hostname'] ~ ',IP:' ~ management_address) }}"
 manila_pki_certificates:
   - name: "manila_{{ ansible_facts['hostname'] }}"

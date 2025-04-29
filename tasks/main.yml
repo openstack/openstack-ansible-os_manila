@@ -14,7 +14,7 @@
 # limitations under the License.
 
 - name: Gather variables for each operating system
-  include_vars: "{{ lookup('first_found', params) }}"
+  ansible.builtin.include_vars: "{{ lookup('first_found', params) }}"
   vars:
     params:
       files:
@@ -30,7 +30,7 @@
     - always
 
 - name: Fail if service was deployed using a different installation method
-  fail:
+  ansible.builtin.fail:
     msg: "Switching installation methods for OpenStack services is not supported"
   when:
     - ansible_local is defined
@@ -40,33 +40,33 @@
     - ansible_local['openstack_ansible']['manila']['install_method'] != manila_install_method
 
 - name: Check for rpc password
-  fail:
+  ansible.builtin.fail:
     msg: >-
       The optiton "manila_oslomsg_rpc_password" is not defined
   when:
     - manila_oslomsg_rpc_password is undefined
 
 - name: Check for mysql password
-  fail:
+  ansible.builtin.fail:
     msg: >-
       The optiton "manila_container_mysql_password" is not defined
   when:
     - manila_container_mysql_password is undefined
 
 - name: Check for service password
-  fail:
+  ansible.builtin.fail:
     msg: >-
       The optiton "manila_service_password" is not defined
   when:
     - manila_service_password is undefined
 
 - name: Gather variables for installation method
-  include_vars: "{{ manila_install_method }}_install.yml"
+  ansible.builtin.include_vars: "{{ manila_install_method }}_install.yml"
   tags:
     - always
 
 - name: Importing manila_lvm_config tasks
-  import_tasks: manila_lvm_config.yml
+  ansible.builtin.import_tasks: manila_lvm_config.yml
   when:
     - manila_services['manila-share']['group'] in group_names
     - manila_backend_lvm_inuse | bool
@@ -74,7 +74,7 @@
     - manila-config
 
 - name: Including osa.db_setup role
-  include_role:
+  ansible.builtin.include_role:
     name: openstack.osa.db_setup
     apply:
       tags:
@@ -96,7 +96,7 @@
     - always
 
 - name: Including osa.mq_setup role
-  include_role:
+  ansible.builtin.include_role:
     name: openstack.osa.mq_setup
     apply:
       tags:
@@ -122,17 +122,17 @@
     - always
 
 - name: Importing manila_pre_install tasks
-  import_tasks: manila_pre_install.yml
+  ansible.builtin.import_tasks: manila_pre_install.yml
   tags:
     - manila-install
 
 - name: Importing manila_install tasks
-  import_tasks: manila_install.yml
+  ansible.builtin.import_tasks: manila_install.yml
   tags:
     - manila-install
 
 - name: Create and install SSL certificates
-  include_role:
+  ansible.builtin.include_role:
     name: pki
     tasks_from: main_certs.yml
     apply:
@@ -152,13 +152,13 @@
     - always
 
 - name: Importing manila_post_install tasks
-  import_tasks: manila_post_install.yml
+  ansible.builtin.import_tasks: manila_post_install.yml
   tags:
     - manila-config
     - post-install
 
 - name: Importing manila_keys tasks
-  import_tasks: manila_keys.yml
+  ansible.builtin.import_tasks: manila_keys.yml
   when:
     - manila_keypair_path is defined
     - manila_services['manila-share']['group'] in group_names
@@ -166,14 +166,14 @@
     - manila-config
 
 - name: Including manila_db_sync tasks
-  include_tasks: manila_db_sync.yml
+  ansible.builtin.include_tasks: manila_db_sync.yml
   when:
     - _manila_is_first_play_host
   tags:
     - manila-config
 
 - name: Import uwsgi role
-  import_role:
+  ansible.builtin.import_role:
     name: uwsgi
   vars:
     uwsgi_services: "{{ uwsgi_manila_services }}"
@@ -185,7 +185,7 @@
     - uwsgi
 
 - name: Importing ceph_client role
-  import_role:
+  ansible.builtin.import_role:
     name: ceph_client
   vars:
     openstack_service_system_user: "{{ manila_system_user_name }}"
@@ -197,7 +197,7 @@
     - ceph
 
 - name: Including osa.service_setup role
-  include_role:
+  ansible.builtin.include_role:
     name: openstack.osa.service_setup
     apply:
       tags:
@@ -228,17 +228,17 @@
     - always
 
 - name: Flush handlers
-  meta: flush_handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: Create singular manila_backends variable for all hosts
-  set_fact:
+  ansible.builtin.set_fact:
     _manila_backends: "{{ (_manila_backends | default(manila_backends)) | combine(hostvars[item]['manila_backends'] | default({})) }}"
   with_items: "{{ groups[manila_services['manila-share']['group']] }}"
   tags:
     - manila-config
 
 - name: Importing manila_backends tasks
-  import_tasks: manila_backends.yml
+  ansible.builtin.import_tasks: manila_backends.yml
   when:
     - groups[manila_services['manila-share']['group']] | length > 0
     - _manila_share_is_first_play_host

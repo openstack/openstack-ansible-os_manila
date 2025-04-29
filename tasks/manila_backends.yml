@@ -18,9 +18,8 @@
   vars:
     ansible_python_interpreter: "{{ manila_service_setup_host_python_interpreter }}"
   block:
-
     - name: Ensure manila api is available
-      uri:
+      ansible.builtin.uri:
         url: "{{ manila_service_internaluri }}"
         status_code: 200,300
         validate_certs: "{{ manila_service_internaluri_insecure | bool }}"
@@ -30,7 +29,7 @@
       delay: 10
 
     - name: Add in manila devices types
-      shell: |
+      ansible.builtin.shell: |
         . {{ ansible_facts['env']['HOME'] }}/openrc
         CLI_OPTIONS="--os-interface internal {{ ((keystone_service_adminuri_insecure | bool) or (manila_service_internaluri_insecure | bool)) | ternary(
           '--insecure', '')
