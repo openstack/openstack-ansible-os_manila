@@ -118,10 +118,6 @@ manila_oslomsg_rabbit_queue_manager: "{{ oslomsg_rabbit_queue_manager | default(
 manila_oslomsg_rabbit_quorum_delivery_limit: "{{ oslomsg_rabbit_quorum_delivery_limit | default(0) }}"
 manila_oslomsg_rabbit_quorum_max_memory_bytes: "{{ oslomsg_rabbit_quorum_max_memory_bytes | default(0) }}"
 
-## (Qdrouterd) integration
-# TODO(evrardjp): Change structure when more backends will be supported
-manila_oslomsg_amqp1_enabled: "{{ manila_oslomsg_rpc_transport == 'amqp' }}"
-
 ## Manila User / Group
 manila_system_user_name: manila
 manila_system_group_name: manila
@@ -270,9 +266,6 @@ manila_pip_packages:
 manila_memcached_servers: "{{ memcached_servers }}"
 
 manila_user_pip_packages: []
-
-manila_optional_oslomsg_amqp1_pip_packages:
-  - oslo.messaging[amqp1]
 
 manila_api_init_overrides: {}
 manila_scheduler_init_overrides: {}
