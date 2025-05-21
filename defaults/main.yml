@@ -301,7 +301,7 @@ manila_services:
     init_config_overrides: "{{ manila_api_init_overrides }}"
     start_order: 4
     wsgi_app: true
-    wsgi_name: manila-wsgi
+    wsgi: "manila.wsgi.api:application"
     uwsgi_overrides: "{{ manila_api_uwsgi_ini_overrides }}"
     uwsgi_port: "{{ manila_service_port }}"
     uwsgi_bind_address: "{{ manila_uwsgi_bind_address }}"

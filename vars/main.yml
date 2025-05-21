@@ -70,7 +70,6 @@ uwsgi_manila_services: |-
          and ('wsgi_app' in value and value['wsgi_app']) %}
   {%     set _ = value.update(
             {
-             'wsgi_path': manila_bin ~ '/' ~ value.wsgi_name,
              'wsgi_venv': ((manila_install_method == 'source') | ternary(manila_bin | dirname, None)),
              'uwsgi_uid': manila_system_user_name,
              'uwsgi_guid': manila_system_group_name,
