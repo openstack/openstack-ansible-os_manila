@@ -1,4 +1,4 @@
-# {{ ansible_managed }}
+# {{ openstack_ansible_managed | default('OpenStack-Ansible Managed') }}
 
 {% set used_lvm_devices = [] %}
 {% set lv_devices = lvm_devices.stdout.split('\n') %}
