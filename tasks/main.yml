@@ -140,9 +140,10 @@
         - manila-config
         - pki
   vars:
+    pki_backend: "{{ manila_pki_backend }}"
     pki_setup_host: "{{ manila_pki_setup_host }}"
     pki_dir: "{{ manila_pki_dir }}"
-    pki_create_certificates: "{{ manila_user_ssl_cert is not defined and manila_user_ssl_key is not defined }}"
+    pki_create_certificates: "{{ manila_user_ssl_cert | length == 0 and manila_user_ssl_key | length == 0 }}"
     pki_regen_cert: "{{ manila_pki_regen_cert }}"
     pki_certificates: "{{ manila_pki_certificates }}"
     pki_install_certificates: "{{ manila_pki_install_certificates }}"

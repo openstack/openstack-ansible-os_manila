@@ -350,12 +350,14 @@ manila_pki_keys_path: "{{ manila_pki_dir ~ '/certs/private/' }}"
 manila_pki_certs_path: "{{ manila_pki_dir ~ '/certs/certs/' }}"
 manila_pki_intermediate_cert_name: "{{ openstack_pki_service_intermediate_cert_name | default('ExampleCorpIntermediate') }}"
 manila_pki_regen_cert: ""
-manila_pki_san: "{{ openstack_pki_san | default('DNS:' ~ ansible_facts['hostname'] ~ ',IP:' ~ management_address) }}"
+manila_pki_san: "{{ openstack_pki_san | default({'dns': [ansible_facts['hostname']], 'ip': [management_address]}) }}"
+manila_pki_backend: "{{ openstack_pki_backend | default('standalone') }}"
 manila_pki_certificates:
   - name: "manila_{{ ansible_facts['hostname'] }}"
-    provider: ownca
     cn: "{{ ansible_facts['hostname'] }}"
     san: "{{ manila_pki_san }}"
+    # standalone backend only
+    provider: ownca
     signed_by: "{{ manila_pki_intermediate_cert_name }}"
 
 # manila destination files for SSL certificates
@@ -364,17 +366,21 @@ manila_ssl_key: /etc/manila/manila.key
 
 # Installation details for SSL certificates
 manila_pki_install_certificates:
-  - src: "{{ manila_user_ssl_cert | default(manila_pki_certs_path ~ 'manila_' ~ ansible_facts['hostname'] ~ '-chain.crt') }}"
+  - name: "manila_{{ ansible_facts['hostname'] }}"
+    type: "certificate_chain"
     dest: "{{ manila_ssl_cert }}"
     owner: "{{ manila_system_user_name }}"
     group: "{{ manila_system_user_name }}"
-    mode: "0644"
-  - src: "{{ manila_user_ssl_key | default(manila_pki_keys_path ~ 'manila_' ~ ansible_facts['hostname'] ~ '.key.pem') }}"
+    # standalone backend only
+    src: "{{ manila_user_ssl_cert | default(manila_pki_certs_path ~ 'manila_' ~ ansible_facts['hostname'] ~ '-chain.crt') }}"
+  - name: "manila_{{ ansible_facts['hostname'] }}"
+    type: "private_key"
     dest: "{{ manila_ssl_key }}"
     owner: "{{ manila_system_user_name }}"
     group: "{{ manila_system_user_name }}"
-    mode: "0600"
+    # standalone backend only
+    src: "{{ manila_user_ssl_key | default(manila_pki_keys_path ~ 'manila_' ~ ansible_facts['hostname'] ~ '.key.pem') }}"
 
 # Define user-provided SSL certificates
-# manila_user_ssl_cert: <path to cert on ansible deployment host>
-# manila_user_ssl_key: <path to cert on ansible deployment host>
+manila_user_ssl_cert: ""
+manila_user_ssl_key: ""
