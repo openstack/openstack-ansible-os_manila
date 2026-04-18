@@ -222,6 +222,7 @@
       - name: "{{ manila_service_v2_name }}"
         type: "{{ manila_service_v2_type }}"
         description: "{{ manila_service_v2_description }}"
+        state: "{{ (manila_enable_v2_api | bool) | ternary('present', 'absent') }}"
   when:
     - _manila_is_first_play_host
   tags:

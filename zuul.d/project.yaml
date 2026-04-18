@@ -21,7 +21,8 @@
       - build-release-notes-jobs-python3
     check:
       jobs:
-        - openstack-ansible-deploy-aio_metal-ubuntu-noble
+        - openstack-ansible-deploy-aio_metal-ubuntu-noble:
+            nodeset: 'ubuntu-noble-16GB'
         # NOTE(noonedeadpunk): Fails with OOM
         - openstack-ansible-deploy-aio_metal-centos-9-stream:
             voting: false
@@ -29,4 +30,5 @@
             voting: false
     gate:
       jobs:
-        - openstack-ansible-deploy-aio_metal-ubuntu-noble
+        - openstack-ansible-deploy-aio_metal-ubuntu-noble:
+            nodeset: 'ubuntu-noble-16GB'
