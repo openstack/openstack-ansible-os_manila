@@ -163,7 +163,7 @@ manila_service_token_roles:
   - service
 manila_service_token_roles_required: "{{ openstack_service_token_roles_required | default(True) }}"
 manila_service_region: "{{ service_region | default('RegionOne') }}"
-manila_service_description: "Openstack Shared File Systems"
+manila_service_description: "OpenStack Shared File Systems V2"
 manila_service_port: 8786
 manila_service_proto: http
 manila_service_publicuri_proto: "{{ openstack_service_publicuri_proto | default(manila_service_proto) }}"
