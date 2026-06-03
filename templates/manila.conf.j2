@@ -22,13 +22,6 @@ rpc_response_timeout = {{ manila_rpc_response_timeout }}
 
 transport_url = {{ manila_oslomsg_rpc_transport }}://{% for host in manila_oslomsg_rpc_servers.split(',') %}{{ manila_oslomsg_rpc_userid }}:{{ manila_oslomsg_rpc_password }}@{{ host }}:{{ manila_oslomsg_rpc_port }}{% if not loop.last %},{% else %}/{{ _manila_oslomsg_rpc_vhost_conf }}{% if manila_oslomsg_rpc_use_ssl | bool %}?ssl=1&ssl_version={{ manila_oslomsg_rpc_ssl_version }}&ssl_ca_file={{ manila_oslomsg_rpc_ssl_ca_file }}{% else %}?ssl=0{% endif %}{% endif %}{% endfor %}
 
-## Quota
-quota_shares = {{ manila_quota_shares }}
-quota_snapshots = {{ manila_quota_snapshots }}
-quota_gigabytes = {{ manila_quota_gigabytes }}
-quota_snapshot_gigabytes = {{ manila_quota_snapshot_gigabytes }}
-quota_share_networks = {{ manila_quota_share_networks }}
-
 storage_availability_zone = {{ manila_storage_availability_zone }}
 
 {% if manila_enabled_share_protocols is defined %}
@@ -72,6 +65,13 @@ transport_url = {{ manila_oslomsg_notify_transport }}://{% for host in manila_os
 
 [oslo_concurrency]
 lock_path = {{ manila_lock_dir }}/{{ manila_system_slice_name }}
+
+[quota]
+shares = {{ manila_quota_shares }}
+snapshots = {{ manila_quota_snapshots }}
+gigabytes = {{ manila_quota_gigabytes }}
+snapshot_gigabytes = {{ manila_quota_snapshot_gigabytes }}
+share_networks = {{ manila_quota_share_networks }}
 
 [profiler]
 enabled = {{ manila_profiler_enabled }}
