@@ -40,7 +40,7 @@ manila_service_distro_packages:
 
 manila_devel_distro_packages:
   - build-essential
-  - git-core
+  - git
   - libsystemd-dev
 
 manila_api_distro_packages:
