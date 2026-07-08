@@ -28,7 +28,6 @@ manila_distro_packages:
 manila_service_distro_packages:
   - openstack-manila
   - python-manilaclient
-  - python2-shade
   - python3-systemd
   - uwsgi
   - uwsgi-python
@@ -51,5 +50,3 @@ manila_lvm_share_distro_packages:
   - parted
 
 manila_rbd_share_distro_packages: []
-
-manila_uwsgi_bin: "/usr/sbin"

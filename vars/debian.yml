@@ -65,5 +65,3 @@ manila_lvm_share_distro_packages:
   - nfs-kernel-server
 
 manila_rbd_share_distro_packages: []
-
-manila_uwsgi_bin: "/usr/bin"
