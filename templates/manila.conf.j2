@@ -41,6 +41,11 @@ enabled_share_backends={% for backend in manila_backends | dictsort %}{{ backend
 
 [database]
 connection = mysql+pymysql://{{ manila_galera_user }}:{{ manila_container_mysql_password }}@{{ manila_galera_address }}:{{ manila_galera_port }}/{{ manila_galera_database }}?charset=utf8{% if manila_galera_use_ssl | bool %}&ssl_verify_cert=true{% if manila_galera_ssl_ca_cert | length > 0 %}&ssl_ca={{ manila_galera_ssl_ca_cert }}{% endif %}{% endif +%}
+{% if manila_galera_readonly_connection_enabled | bool %}
+slave_connection = mysql+pymysql://{{ manila_galera_user }}:{{ manila_container_mysql_password }}@{{ manila_galera_readonly_address }}:{{ manila_galera_readonly_port }}/{{ manila_galera_database }}?charset=utf8{% if manila_galera_use_ssl | bool %}&ssl_verify_cert=true{% if manila_galera_ssl_ca_cert | length > 0 %}&ssl_ca={{ manila_galera_ssl_ca_cert }}{% endif %}{% endif +%}
+synchronous_reader = {{ manila_galera_synchronous_reader }}
+mysql_wsrep_sync_wait = {{ manila_galera_synchronous_reader | bool | ternary(0, 1) }}
+{% endif %}
 max_overflow = {{ manila_db_max_overflow }}
 max_pool_size = {{ manila_db_max_pool_size }}
 pool_timeout = {{ manila_db_pool_timeout }}
