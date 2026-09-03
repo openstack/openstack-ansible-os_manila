@@ -251,7 +251,7 @@ manila_service_in_ldap: "{{ service_ldap_backend_enabled | default(False) }}"
 
 # Common pip packages
 manila_pip_packages:
-  - "git+{{ manila_git_repo }}@{{ manila_git_install_branch }}#egg=manila"
+  - "manila@git+{{ manila_git_repo }}@{{ manila_git_install_branch }}"
   - cryptography
   - ecdsa
   - httplib2
