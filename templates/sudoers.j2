@@ -4,3 +4,5 @@ Defaults:{{ manila_system_user_name }} !requiretty
 Defaults:{{ manila_system_user_name }} secure_path="{{ manila_bin }}:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 {{ manila_system_user_name }} ALL = (root) NOPASSWD: {{ manila_bin }}/{{ manila_service_name }}-rootwrap
+# privsep-helper is required by the LVM share driver (oslo.privsep); see LP#2045845.
+{{ manila_system_user_name }} ALL = (root) NOPASSWD: {{ manila_bin }}/privsep-helper
