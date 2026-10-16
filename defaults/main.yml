@@ -47,7 +47,7 @@ manila_bin: "{{ _manila_bin }}"
 # Enable/Disable Ceilometer
 manila_ceilometer_enabled: "{{ (groups['ceilometer_all'] is defined) and (groups['ceilometer_all'] | length > 0) }}"
 
-manila_storage_availability_zone: nova
+manila_storage_availability_zone: "{{ openstack_default_availability_zone | default('nova', true) }}"
 manila_default_availability_zone: "{{ manila_storage_availability_zone }}"
 
 manila_management_address: 127.0.0.1

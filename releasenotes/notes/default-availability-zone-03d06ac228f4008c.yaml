@@ -1,0 +1,5 @@
+---
+features:
+  - |
+    The ``manila_storage_availability_zone`` variable now defaults to
+    ``openstack_default_availability_zone``, which is ``nova``.
